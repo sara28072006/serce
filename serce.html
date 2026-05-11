@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduAir — CARDIO · Budowa i Funkcja Serca</title>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lexend+Peta:wght@400;600&family=Space+Mono:wght@400;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+
+:root{
+  --bg:#0e0608;
+  --card:#160b0d;
+  --card2:#1c1012;
+  --text:#fff0f2;
+  --muted:rgba(255,200,210,0.45);
+  --border:rgba(220,60,80,0.14);
+  --red:#e8304a;
+  --red-dim:rgba(232,48,74,0.10);
+  --red-mid:rgba(232,48,74,0.22);
+  --crimson:#c41e3a;
+  --gold:#c5a059;
+  --gold-dim:rgba(197,160,89,0.12);
+  --success:#00e09a;
+  --danger:#ff6b35;
+  --warning:#f5a623;
+  --opt-bg:rgba(232,48,74,0.06);
+  --opt-hover:rgba(232,48,74,0.12);
+  --accent:#e8304a;
+  --shadow:0 8px 32px rgba(0,0,0,0.6);
+  --shadow-lg:0 20px 60px rgba(0,0,0,0.8);
+}
+
+body.light-theme{
+  --bg:#fff5f6;--card:#fff;--card2:#fff0f1;--text:#1a0406;
+  --muted:#8a3040;--border:rgba(180,30,50,0.15);--opt-bg:#fff0f1;
+  --opt-hover:#ffe0e4;--shadow:0 4px 20px rgba(180,30,50,0.10);
+  --shadow-lg:0 20px 60px rgba(180,30,50,0.15);
+}
+
+::selection{background:rgba(232,48,74,0.25);color:var(--text);}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden;transition:background 0.3s;}
+
+/* ══ HEADER ══ */
+.exam-header{display:flex;justify-content:space-between;align-items:center;padding:18px 40px;background:rgba(14,6,8,0.96);border-bottom:1px solid var(--border);z-index:10;flex-shrink:0;backdrop-filter:blur(20px);}
+body.light-theme .exam-header{background:rgba(255,245,246,0.96);}
+.brand{font-family:'Lexend Peta',sans-serif;font-size:16px;letter-spacing:2px;color:var(--text);display:flex;align-items:center;gap:10px;cursor:pointer;}
+.brand-heart{color:var(--red);animation:heartbeat 1.2s ease-in-out infinite;}
+@keyframes heartbeat{
+  0%,100%{transform:scale(1);}
+  14%{transform:scale(1.18);}
+  28%{transform:scale(1);}
+  42%{transform:scale(1.1);}
+  70%{transform:scale(1);}
+}
+.exam-title{font-size:12px;color:var(--red);text-transform:uppercase;letter-spacing:1px;border-left:1px solid var(--border);padding-left:10px;font-weight:700;}
+.header-controls{display:flex;align-items:center;gap:18px;}
+.btn-audio{background:transparent;border:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;transition:0.3s;}
+.btn-audio:hover{background:var(--red-dim);color:var(--red);}
+.btn-audio.active{color:var(--red);animation:pulseRed 2s infinite;}
+@keyframes pulseRed{0%,100%{box-shadow:0 0 0 0 rgba(232,48,74,0.4);}50%{box-shadow:0 0 0 8px rgba(232,48,74,0);}}
+.theme-toggle{background:transparent;border:1px solid var(--border);border-radius:20px;padding:8px 16px;color:var(--muted);cursor:pointer;display:flex;align-items:center;font-size:12px;font-weight:600;gap:6px;transition:0.3s;font-family:'Inter',sans-serif;}
+.theme-toggle:hover{color:var(--red);border-color:var(--red);}
+.sun-icon{display:none;}.moon-icon{display:block;}
+body.light-theme .sun-icon{display:block;}body.light-theme .moon-icon{display:none;}
+.timer{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--text);display:none;align-items:center;gap:8px;}
+.timer.urgent{color:var(--danger);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* ══ DRAG WINDOWS ══ */
+.drag-window{position:fixed;background:rgba(14,6,8,0.94);backdrop-filter:blur(40px);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow-lg);z-index:1000;opacity:0;pointer-events:none;transition:opacity 0.3s;display:flex;flex-direction:column;}
+body.light-theme .drag-window{background:rgba(255,245,246,0.96);}
+.drag-window.open{opacity:1;pointer-events:auto;}
+.drag-header{background:rgba(232,48,74,0.04);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);border-radius:20px 20px 0 0;cursor:grab;user-select:none;}
+.drag-header:active{cursor:grabbing;}
+#audio-panel{top:80px;right:40px;width:300px;}
+.audio-controls{display:flex;flex-direction:column;gap:14px;padding:18px;}
+.audio-select{width:100%;padding:11px;background:var(--opt-bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;cursor:pointer;}
+.volume-slider-container{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;}
+.volume-slider{flex-grow:1;accent-color:var(--red);cursor:pointer;}
+
+/* ══ CHATS ══ */
+.comms-avatar{width:36px;height:36px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-weight:600;font-size:13px;position:relative;background:var(--card);border:1px solid var(--red);color:var(--red);}
+.comms-status-dot{position:absolute;bottom:-2px;right:-2px;width:11px;height:11px;border-radius:50%;border:2px solid var(--card);background:var(--red);}
+#peer-hub .comms-avatar{border-color:var(--success);color:var(--success);}
+#peer-hub .comms-status-dot{background:var(--success);}
+#comms-hub .msg.sent{background:linear-gradient(135deg,var(--red) 0%,#7a0a18 100%);}
+#peer-hub .msg.sent{background:linear-gradient(135deg,var(--success) 0%,#006644 100%);}
+#comms-hub .comms-send-btn{background:var(--red);}
+#peer-hub .comms-send-btn{background:var(--success);}
+.comms-body{height:230px;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;}
+.msg-wrapper{display:flex;flex-direction:column;gap:4px;max-width:85%;}
+.msg-wrapper.received{align-self:flex-start;}
+.msg-wrapper.sent{align-self:flex-end;align-items:flex-end;}
+.msg{padding:11px 15px;font-size:13px;line-height:1.5;color:#fff;}
+.msg.received{background:var(--opt-bg);color:var(--text);border:1px solid var(--border);border-radius:16px 16px 16px 4px;}
+.msg.sent{border-radius:16px 16px 4px 16px;}
+.msg-time{font-size:9px;color:var(--muted);font-family:'Space Mono',monospace;padding:0 4px;}
+.typing-indicator{display:none;align-items:center;gap:4px;padding:11px 15px;background:var(--opt-bg);border-radius:16px 16px 16px 4px;width:fit-content;align-self:flex-start;margin-bottom:4px;}
+.typing-dot{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:typingAnim 1.4s infinite ease-in-out both;}
+.typing-dot:nth-child(1){animation-delay:-0.32s;}.typing-dot:nth-child(2){animation-delay:-0.16s;}
+@keyframes typingAnim{0%,80%,100%{transform:scale(0);opacity:0.4;}40%{transform:scale(1);opacity:1;}}
+.quick-replies{display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;}
+.quick-replies::-webkit-scrollbar{display:none;}
+.qr-btn{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:20px;padding:6px 12px;font-size:11px;font-family:'Inter',sans-serif;cursor:pointer;transition:0.2s;}
+.qr-btn:hover{border-color:var(--success);color:var(--success);}
+.comms-footer{padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:9px;align-items:center;}
+.comms-input{flex-grow:1;background:var(--opt-bg);border:1px solid var(--border);border-radius:30px;padding:10px 15px;font-size:13px;outline:none;color:var(--text);font-family:'Inter',sans-serif;}
+.comms-send-btn{color:white;border:none;width:34px;height:34px;border-radius:50%;display:flex;justify-content:center;align-items:center;cursor:pointer;transition:0.3s;flex-shrink:0;}
+
+/* ══ FAB ══ */
+.chat-fab{position:fixed;bottom:30px;z-index:999;width:54px;height:54px;border-radius:50%;color:white;display:none;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.4);cursor:pointer;transition:transform 0.3s;border:none;}
+.chat-fab:hover{transform:scale(1.1);}
+.chat-fab.visible{display:flex;animation:popIn 0.4s cubic-bezier(0.16,1,0.3,1);}
+#fab-instructor{right:30px;background:var(--red);}
+#fab-peer{right:98px;background:var(--success);}
+.chat-fab.attention{animation:fabPulse 1s infinite alternate;z-index:1001;}
+@keyframes fabPulse{from{transform:scale(1);box-shadow:0 0 10px var(--red);}to{transform:scale(1.15);box-shadow:0 0 30px var(--red);}}
+@keyframes popIn{from{transform:scale(0);}to{transform:scale(1);}}
+
+/* ══ PRE-FLIGHT ══ */
+#pre-flight-overlay{position:fixed;inset:0;background:rgba(8,2,4,0.93);backdrop-filter:blur(12px);z-index:10000;display:none;flex-direction:column;align-items:center;justify-content:center;}
+#pre-flight-overlay.active{display:flex;animation:fadeInAnim 0.4s;}
+@keyframes fadeInAnim{from{opacity:0;}to{opacity:1;}}
+.boarding-modal{background:var(--card);border:1px solid var(--red);border-radius:20px;width:100%;max-width:460px;padding:42px;box-shadow:0 0 60px rgba(232,48,74,0.15);display:flex;flex-direction:column;gap:20px;}
+.boarding-header{font-family:'Lexend Peta',sans-serif;font-size:20px;text-align:center;color:var(--red);letter-spacing:1px;margin-bottom:8px;}
+.checklist{display:flex;flex-direction:column;gap:14px;margin-bottom:8px;}
+.check-item{display:flex;align-items:center;gap:12px;cursor:pointer;font-size:14px;color:var(--text);}
+.custom-checkbox{width:24px;height:24px;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;transition:0.2s;pointer-events:none;flex-shrink:0;}
+.custom-checkbox svg{opacity:0;transition:0.2s;color:white;}
+.check-item input{display:none;}
+.check-item input:checked+.custom-checkbox{background:var(--success);border-color:var(--success);}
+.check-item input:checked+.custom-checkbox svg{opacity:1;}
+.btn-takeoff{background:var(--red);color:#fff;border:none;padding:16px;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;text-transform:uppercase;transition:0.3s;font-family:'Inter',sans-serif;letter-spacing:1px;}
+.btn-takeoff:disabled{background:var(--border)!important;color:var(--muted)!important;cursor:not-allowed;}
+.btn-takeoff:hover:not(:disabled){background:var(--crimson);}
+
+/* ══ MAIN MENU ══ */
+#main-menu{flex-grow:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:40px;overflow-y:auto;background:radial-gradient(ellipse at 50% 80%,rgba(232,48,74,0.06) 0%,transparent 65%);}
+.menu-title{font-family:'Lexend Peta',sans-serif;font-size:30px;color:var(--text);text-align:center;}
+.menu-subtitle{font-size:14px;color:var(--muted);text-align:center;letter-spacing:0.5px;}
+.menu-cards{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;}
+.menu-card{background:var(--card);border:1px solid var(--border);border-radius:18px;width:290px;padding:28px;cursor:pointer;transition:0.3s;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.menu-card::before{content:'';position:absolute;top:0;left:30%;right:30%;height:1px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:0;transition:0.3s;}
+.menu-card:hover:not(.locked){transform:translateY(-5px);border-color:rgba(232,48,74,0.4);box-shadow:0 15px 50px rgba(232,48,74,0.12);}
+.menu-card:hover:not(.locked)::before{opacity:1;}
+.menu-card h3{font-size:17px;color:var(--text);margin:14px 0 8px;}
+.menu-card p{font-size:13px;color:var(--muted);line-height:1.6;}
+.menu-icon{width:58px;height:58px;border-radius:50%;display:flex;justify-content:center;align-items:center;background:var(--red-dim);color:var(--red);}
+#card-exam .menu-icon{background:var(--gold-dim);color:var(--gold);}
+.menu-card.locked{opacity:0.55;cursor:not-allowed;filter:grayscale(80%);}
+.menu-card.locked:hover{transform:none;border-color:var(--border);box-shadow:var(--shadow);}
+.lock-icon{position:absolute;inset:0;background:rgba(14,6,8,0.78);display:none;align-items:center;justify-content:center;z-index:10;color:var(--muted);flex-direction:column;gap:10px;font-weight:700;font-size:11px;letter-spacing:2px;font-family:'Space Mono',monospace;backdrop-filter:blur(3px);}
+.menu-card.locked .lock-icon{display:flex;}
+.btn-reset{margin-top:32px;background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;transition:0.3s;display:flex;align-items:center;gap:6px;}
+.btn-reset:hover{border-color:var(--danger);color:var(--danger);}
+
+/* ══ MODULE SHARED ══ */
+.module-container{display:none;flex-grow:1;flex-direction:column;align-items:center;padding:10px 20px 30px;overflow:hidden;min-height:0;}
+.lesson-card{background:var(--card);border:1px solid var(--border);border-radius:18px;width:100%;max-width:920px;display:flex;flex-direction:column;box-shadow:var(--shadow);overflow:hidden;flex-grow:1;max-height:calc(100vh - 185px);min-height:0;}
+.wp-section{display:none;flex-direction:column;flex-grow:1;padding:36px 40px;overflow-y:auto;overflow-x:hidden;animation:fadeInAnim 0.4s;min-height:0;}
+.wp-section.active{display:flex;}
+.phase-badge{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--red);background:var(--red-dim);padding:4px 10px;border-radius:6px;display:inline-block;margin-bottom:14px;width:fit-content;text-transform:uppercase;border:1px solid rgba(232,48,74,0.28);}
+.lesson-footer{padding:18px 40px;background:var(--card2);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.btn{padding:11px 22px;border-radius:9px;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border:none;font-family:'Inter',sans-serif;transition:0.2s;}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-outline:hover:not(:disabled){background:var(--opt-bg);}
+.btn-outline:disabled{opacity:0.3;cursor:not-allowed;}
+.btn-primary{background:var(--red);color:#fff;font-weight:700;}
+.btn-primary:hover:not(:disabled){background:var(--crimson);transform:translateY(-1px);}
+.btn-primary:disabled{opacity:0.3;cursor:not-allowed;}
+
+/* Timeline */
+.flight-path-timeline{display:flex;align-items:center;justify-content:space-between;padding:14px 40px 18px;width:100%;max-width:920px;margin:0 auto;position:relative;flex-shrink:0;}
+.timeline-line{position:absolute;top:35%;left:55px;right:55px;height:2px;background:var(--border);z-index:1;}
+.timeline-fill{position:absolute;top:35%;left:55px;height:2px;background:var(--red);z-index:2;transition:width 0.5s;box-shadow:0 0 8px var(--red);}
+.waypoint-node{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:5px;opacity:0.35;transition:0.3s;width:80px;}
+.waypoint-node.active,.waypoint-node.completed{opacity:1;}
+.waypoint-node.active{transform:scale(1.1);}
+.waypoint-dot{width:13px;height:13px;border-radius:50%;background:var(--card);border:3px solid var(--border);transition:0.3s;box-shadow:0 0 0 4px var(--bg);}
+.waypoint-node.completed .waypoint-dot{background:var(--red);border-color:var(--red);box-shadow:0 0 8px var(--red),0 0 0 4px var(--bg);}
+.waypoint-node.active .waypoint-dot{border-color:var(--red);}
+.waypoint-label{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;text-align:center;}
+.waypoint-node.active .waypoint-label{color:var(--red);}
+
+/* ══ SIDE PANELS ══ */
+.side-panel{position:fixed;top:0;width:340px;height:100vh;background:var(--card);z-index:1100;padding:36px 28px;transition:0.5s;display:flex;flex-direction:column;border-right:1px solid var(--border);}
+.side-panel.left{left:-380px;}
+.side-panel.left.open{left:0;}
+.side-panel.right{right:-380px;border-left:1px solid var(--border);border-right:none;}
+.side-panel.right.open{right:0;}
+.panel-header{font-family:'Lexend Peta',sans-serif;font-size:13px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;color:var(--text);}
+.logbook-textarea{flex-grow:1;width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:18px;font-family:'Space Mono',monospace;font-size:12px;color:var(--text);resize:none;outline:none;line-height:1.7;}
+#copy-helper{position:absolute;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:20px;cursor:pointer;display:none;z-index:9999;box-shadow:0 4px 15px rgba(232,48,74,0.4);font-family:'Inter',sans-serif;}
+.note-card{padding:13px 15px;background:var(--card2);border:1px solid var(--border);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px;}
+.note-card strong{color:var(--red);display:block;margin-bottom:5px;font-size:10px;letter-spacing:1.5px;font-family:'Space Mono',monospace;}
+.side-trigger{position:fixed;top:160px;z-index:500;display:none;flex-direction:column;align-items:center;gap:7px;cursor:pointer;}
+.side-trigger.left{left:36px;}.side-trigger.right{right:36px;}
+.trigger-box{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;background:var(--red);box-shadow:0 0 20px rgba(232,48,74,0.3);}
+.trigger-label{font-size:8px;font-weight:700;color:var(--red);font-family:'Space Mono',monospace;letter-spacing:1px;}
+
+/* ══ VIDEO PLACEHOLDER ══ */
+.video-placeholder{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--border);background:linear-gradient(135deg,#1a0508 0%,#0e0306 100%);flex-shrink:0;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;cursor:pointer;}
+.video-placeholder::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(232,48,74,0.08) 0%,transparent 70%);}
+.video-play-btn{width:72px;height:72px;border-radius:50%;background:rgba(232,48,74,0.18);border:2px solid rgba(232,48,74,0.5);display:flex;align-items:center;justify-content:center;color:var(--red);transition:0.3s;z-index:2;}
+.video-placeholder:hover .video-play-btn{background:rgba(232,48,74,0.32);transform:scale(1.08);}
+.video-placeholder-text{z-index:2;text-align:center;}
+.video-placeholder-text h3{font-family:'Lexend Peta',sans-serif;font-size:16px;color:var(--text);margin-bottom:6px;}
+.video-placeholder-text p{font-size:12px;color:var(--muted);}
+.video-placeholder-badge{position:absolute;top:14px;left:14px;background:rgba(14,3,6,0.85);border:1px solid rgba(232,48,74,0.4);backdrop-filter:blur(8px);border-radius:100px;padding:5px 12px;font-size:10px;font-weight:700;color:var(--red);font-family:'Space Mono',monospace;letter-spacing:1px;z-index:3;}
+
+/* VIDEO HINT BOX */
+.video-hint-box{margin-top:14px;padding:16px 20px;background:linear-gradient(135deg,rgba(232,48,74,0.07),rgba(196,30,58,0.04));border:1px solid rgba(232,48,74,0.2);border-radius:12px;display:flex;gap:14px;align-items:flex-start;}
+.video-hint-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.video-hint-text{font-size:13px;color:var(--muted);line-height:1.65;}
+.video-hint-text strong{color:var(--red);display:block;font-size:11px;font-family:'Space Mono',monospace;letter-spacing:1px;margin-bottom:5px;}
+
+/* ══ 3D MODEL VIEWER ══ */
+.model-wrap{border-radius:14px;overflow:hidden;border:1px solid var(--border);background:#0e0306;flex-shrink:0;position:relative;}
+model-viewer{width:100%;height:420px;--poster-color:transparent;background:transparent;}
+.model-controls-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(14,3,6,0.85);border:1px solid rgba(232,48,74,0.35);backdrop-filter:blur(8px);border-radius:20px;padding:6px 16px;font-family:'Space Mono',monospace;font-size:10px;color:var(--red);letter-spacing:1px;pointer-events:none;white-space:nowrap;z-index:5;}
+.model-badge{position:absolute;top:14px;left:14px;background:rgba(14,3,6,0.85);border:1px solid rgba(232,48,74,0.4);backdrop-filter:blur(8px);border-radius:8px;padding:6px 13px;font-family:'Space Mono',monospace;font-size:10px;color:var(--red);letter-spacing:1px;z-index:5;display:flex;align-items:center;gap:7px;}
+.model-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--red);animation:heartbeat-dot 1.2s ease-in-out infinite;flex-shrink:0;}
+@keyframes heartbeat-dot{0%,100%{transform:scale(1);}50%{transform:scale(1.5);}}
+
+/* Zadanie do modelu */
+.task-box{margin-top:16px;padding:18px 20px;background:var(--card2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;gap:14px;}
+.task-box-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--red);font-weight:700;display:flex;align-items:center;gap:8px;}
+.task-checklist{display:flex;flex-direction:column;gap:10px;}
+.task-check-item{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--muted);line-height:1.55;cursor:pointer;padding:10px 12px;border-radius:9px;border:1px solid transparent;transition:0.2s;}
+.task-check-item:hover{background:var(--red-dim);border-color:rgba(232,48,74,0.2);}
+.task-check-item.done{color:var(--text);background:rgba(0,224,154,0.06);border-color:rgba(0,224,154,0.2);}
+.task-check-item .tchk{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:0.2s;}
+.task-check-item.done .tchk{background:var(--success);border-color:var(--success);}
+.task-check-item.done .tchk svg{opacity:1;}
+.task-check-item .tchk svg{opacity:0;transition:0.2s;}
+.task-progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.task-progress-fill{height:100%;background:var(--red);border-radius:2px;transition:width 0.4s;box-shadow:0 0 6px var(--red);}
+.task-done-msg{display:none;padding:12px 14px;background:rgba(0,224,154,0.08);border:1px solid rgba(0,224,154,0.25);border-radius:10px;font-size:13px;color:var(--success);font-weight:600;text-align:center;}
+.task-done-msg.show{display:block;}
+
+/* ══ ARTICLE ══ */
+.manual-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);gap:18px;}
+.btn-tts{background:var(--red-dim);color:var(--red);border:1px solid rgba(232,48,74,0.3);border-radius:20px;padding:6px 13px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:0.3s;font-family:'Inter',sans-serif;flex-shrink:0;}
+.btn-tts:hover{background:var(--red-mid);}
+.btn-tts.playing{background:var(--red);color:#fff;}
+.manual-text{font-size:15px;line-height:1.85;}
+.manual-text p{margin-bottom:14px;}
+.manual-text h3{font-family:'Lexend Peta',sans-serif;font-size:13px;margin:22px 0 10px;color:var(--text);letter-spacing:0.5px;}
+.article-meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:4px;}
+.article-meta span{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.5px;}
+.keyword{color:var(--red);font-weight:600;cursor:help;border-bottom:1px dashed rgba(232,48,74,0.5);position:relative;}
+.keyword:hover::after{content:attr(data-def);position:absolute;bottom:130%;left:50%;transform:translateX(-50%);width:max-content;max-width:260px;background:var(--card2);color:var(--text);padding:10px 13px;border-radius:10px;font-size:12px;z-index:100;font-family:'Inter',sans-serif;font-weight:normal;line-height:1.5;border:1px solid var(--border);box-shadow:var(--shadow);}
+.sup-note{font-size:11px;vertical-align:super;color:var(--red);cursor:pointer;font-weight:700;font-family:'Space Mono',monospace;}
+.article-footnotes{margin-top:22px;padding-top:14px;border-top:1px solid var(--border);}
+.article-footnotes p{font-size:12px;color:var(--muted);margin-bottom:4px;font-style:italic;}
+
+/* ══ CHECK QUESTIONS ══ */
+.ac-question{font-size:19px;font-weight:500;margin-bottom:26px;line-height:1.4;}
+.ac-options{display:flex;flex-direction:column;gap:11px;}
+.ac-btn{padding:15px 20px;background:var(--opt-bg);border:2px solid transparent;border-radius:12px;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;font-size:15px;color:var(--text);transition:0.2s;}
+.ac-btn:hover{background:var(--opt-hover);}
+.ac-btn.correct{background:rgba(0,224,154,0.1);border-color:var(--success);color:var(--success);}
+.ac-btn.wrong{background:rgba(255,107,53,0.1);border-color:var(--danger);color:var(--danger);}
+
+/* ══ INFOGRAPHIC ══ */
+.infographic-outer{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:28px 24px 32px;margin-top:6px;}
+.infographic-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-align:center;color:var(--muted);text-transform:uppercase;margin-bottom:28px;font-weight:700;}
+.process-steps{display:flex;align-items:flex-start;gap:0;width:100%;}
+.process-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;padding:0 5px;}
+.process-step:not(:last-child)::after{content:'';position:absolute;top:29px;right:-14%;width:28%;height:2px;background:var(--border);z-index:0;transition:0.3s;}
+.process-step.step-active:not(:last-child)::after{background:var(--red);box-shadow:0 0 6px var(--red);}
+.step-circle{width:58px;height:58px;border-radius:50%;background:var(--card);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;transition:0.25s;margin-bottom:12px;position:relative;z-index:1;box-shadow:var(--shadow);}
+.process-step:hover .step-circle,.process-step.step-active .step-circle{border-color:var(--red);box-shadow:0 0 0 5px var(--red-dim),var(--shadow);transform:scale(1.08);}
+.step-name{font-family:'Space Mono',monospace;font-size:9px;text-align:center;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;font-weight:700;}
+.process-step.step-active .step-name{color:var(--red);}
+.step-desc{font-size:12px;color:var(--muted);text-align:center;line-height:1.6;min-height:72px;padding:0 3px;transition:0.2s;}
+.process-step.step-active .step-desc{color:var(--text);}
+.step-law-ref{margin-top:8px;font-family:'Space Mono',monospace;font-size:9px;color:var(--red);text-align:center;opacity:0;transition:0.2s;font-weight:700;padding:3px 8px;border:1px solid rgba(232,48,74,0.3);border-radius:4px;}
+.process-step.step-active .step-law-ref{opacity:1;}
+.infographic-hint{text-align:center;margin-top:20px;font-size:11px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:0.5px;}
+
+/* ══ SIMULATOR — DOWODY ══ */
+.evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex-shrink:0;}
+.evidence-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:20px 18px;transition:0.3s;}
+.evidence-card:hover{border-color:rgba(232,48,74,0.28);}
+.ev-number{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;}
+.ev-icon{font-size:28px;margin-bottom:10px;}
+.ev-title{font-weight:600;font-size:13px;margin-bottom:10px;color:var(--text);}
+.ev-content{font-size:13px;color:var(--muted);line-height:1.7;}
+.ev-highlight{color:var(--red);font-weight:700;cursor:pointer;background:var(--red-dim);padding:1px 6px;border-radius:4px;border:1px solid rgba(232,48,74,0.22);transition:0.2s;}
+.ev-highlight:hover{background:var(--red-mid);}
+.ev-highlight.marked{background:rgba(0,224,154,0.15);border-color:var(--success);color:var(--success);}
+.contradiction-panel{margin-top:18px;padding:18px 20px;background:var(--card2);border:1px solid var(--border);border-radius:14px;flex-shrink:0;}
+.contradiction-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1.5px;color:var(--red);margin-bottom:12px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.contradiction-list{display:flex;flex-direction:column;gap:8px;}
+.c-item{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;background:rgba(232,48,74,0.03);border:1px solid rgba(232,48,74,0.07);transition:0.3s;}
+.c-item-icon{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;transition:0.3s;}
+.c-item.found{color:var(--text);background:rgba(0,224,154,0.06);border-color:rgba(0,224,154,0.2);}
+.c-item.found .c-item-icon{background:var(--success);border-color:var(--success);}
+
+/* Verdict */
+.verdict-section{padding:26px;background:var(--card2);border:1px solid var(--border);border-radius:16px;display:flex;flex-direction:column;gap:18px;flex-shrink:0;}
+.verdict-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--red);display:flex;align-items:center;gap:8px;font-weight:700;}
+.verdict-options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.verdict-btn{padding:14px 12px;background:var(--opt-bg);border:2px solid var(--border);border-radius:12px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--text);transition:0.2s;text-align:center;}
+.verdict-btn:hover{border-color:var(--red);background:var(--red-dim);}
+.verdict-btn.selected-verdict{border-color:var(--red);background:var(--red-dim);color:var(--red);}
+.verdict-result{padding:18px 20px;border-radius:12px;border-left:3px solid var(--red);background:rgba(232,48,74,0.05);display:none;}
+.verdict-result.show{display:block;}
+.verdict-result-title{font-weight:700;margin-bottom:10px;font-size:14px;}
+
+/* ══ EXAM ══ */
+.progress-bar-container{height:5px;background:var(--card2);}
+.progress-bar-fill{height:100%;background:var(--red);transition:width 0.4s;box-shadow:0 0 8px var(--red);}
+.question-header{padding:26px 40px 8px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);flex-shrink:0;}
+.btn-flag{background:transparent;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:8px;cursor:pointer;display:flex;justify-content:center;align-items:center;transition:0.2s;}
+.btn-flag.flagged{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.seat-badge{background:var(--opt-bg);padding:5px 12px;border-radius:8px;border:1px solid var(--border);font-family:'Space Mono',monospace;font-weight:700;color:var(--red);font-size:11px;}
+.exam-options .option-btn{display:flex;align-items:center;width:100%;padding:15px 18px;background:var(--opt-bg);border:2px solid transparent;border-radius:12px;cursor:pointer;transition:0.2s;color:var(--text);font-size:15px;text-align:left;font-family:'Inter',sans-serif;margin-bottom:9px;}
+.exam-options .option-btn.selected{background:var(--red-dim);border-color:var(--red);}
+.exam-options .option-btn.eliminated{opacity:0.2;pointer-events:none;text-decoration:line-through;background:transparent;}
+.exam-options .option-letter{width:30px;height:30px;background:var(--card);border:1px solid var(--border);border-radius:7px;margin-right:14px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted);flex-shrink:0;font-family:'Space Mono',monospace;font-size:12px;}
+.exam-options .option-btn.selected .option-letter{background:var(--red);color:#fff;border-color:var(--red);}
+.exam-fp{padding:0 40px 18px;display:flex;gap:7px;justify-content:center;flex-wrap:wrap;flex-shrink:0;}
+.exam-fp-node{width:27px;height:27px;border:2px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;cursor:pointer;font-family:'Space Mono',monospace;transition:0.2s;position:relative;}
+.exam-fp-node.active{border-color:var(--red);color:var(--red);transform:scale(1.1);}
+.exam-fp-node.answered{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+.exam-fp-node.flagged::after{content:'';position:absolute;top:-4px;right:-4px;width:8px;height:8px;background:var(--gold);border-radius:50%;border:2px solid var(--card);}
+.btn-oxygen{background:var(--red-dim);border:1px solid rgba(232,48,74,0.38);color:var(--red);display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:8px;font-family:'Inter',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:0.2s;}
+.btn-oxygen:hover:not(:disabled){background:var(--red-mid);}
+.btn-oxygen:disabled{opacity:0.3;cursor:not-allowed;border-color:var(--border);color:var(--muted);background:transparent;}
+.landing-view{text-align:center;align-items:center;justify-content:center;height:100%;flex-direction:column;}
+.landing-icon{width:90px;height:90px;background:rgba(0,224,154,0.1);border-radius:50%;display:flex;justify-content:center;align-items:center;color:var(--success);margin-bottom:18px;border:1px solid rgba(0,224,154,0.2);}
+.landing-title{font-family:'Lexend Peta',sans-serif;font-size:26px;margin-bottom:10px;color:var(--text);}
+
+#leak-overlay{position:fixed;inset:0;background:rgba(200,20,40,0.95);backdrop-filter:blur(10px);z-index:10000;display:none;flex-direction:column;align-items:center;justify-content:center;color:white;text-align:center;}
+
+@media(max-width:768px){
+  .exam-header{padding:14px 18px;flex-direction:column;gap:12px;}
+  .lesson-card{max-height:calc(100vh - 120px);}
+  .menu-cards{flex-direction:column;}
+  .evidence-grid{grid-template-columns:1fr;}
+  .verdict-options{grid-template-columns:1fr;}
+  .process-steps{flex-wrap:wrap;gap:20px;}
+  .process-step:not(:last-child)::after{display:none;}
+  model-viewer{height:300px;}
+}
+</style>
+</head>
+<body>
+
+<header class="exam-header">
+  <div class="brand" onclick="exitModule()">
+    <div class="brand-heart">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+    </div>
+    EduAir <span class="exam-title" id="top-module-name">CARDIO</span>
+  </div>
+  <div class="header-controls">
+    <div class="timer" id="exam-timer">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span id="time-display">20:00</span>
+    </div>
+    <button class="btn-audio" id="btn-audio" onclick="toggleAudioPanel()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+    </button>
+    <button class="theme-toggle" onclick="document.body.classList.toggle('light-theme')">
+      <svg class="sun-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/></svg>
+      <svg class="moon-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      MOTYW
+    </button>
+  </div>
+</header>
+
+<!-- AUDIO PANEL -->
+<div id="audio-panel" class="drag-window" style="right:40px;top:80px;">
+  <div class="drag-header">
+    <span style="font-weight:600;font-size:13px;">🎵 Radio Pokładowe</span>
+    <button onclick="toggleAudioPanel()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">✕</button>
+  </div>
+  <div class="audio-controls">
+    <select id="audio-channel" class="audio-select" onchange="handleAudioChannelChange()">
+      <option value="none">Wyłączone (Cisza)</option>
+      <optgroup label="Szumy">
+        <option value="waves">Ocean Waves</option>
+        <option value="pink">Szum różowy (Skupienie)</option>
+        <option value="cabin">Deep Rumble</option>
+      </optgroup>
+      <optgroup label="Muzyka fokusowa">
+        <option value="ambient">Deep Focus Ambient</option>
+        <option value="ethereal">Ethereal Chimes</option>
+      </optgroup>
+    </select>
+    <div class="volume-slider-container">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+      <input type="range" id="audio-volume" class="volume-slider" min="0" max="1" step="0.05" value="0.3" oninput="changeVolume(this.value)">
+    </div>
+  </div>
+</div>
+
+<!-- CHATS -->
+<div id="comms-hub" class="drag-window" style="right:30px;bottom:100px;width:315px;">
+  <div class="drag-header">
+    <div style="display:flex;align-items:center;gap:11px;pointer-events:none;">
+      <div class="comms-avatar">AZ<div class="comms-status-dot"></div></div>
+      <div style="line-height:1.2;"><div style="font-weight:600;font-size:13px;">dr Anna Zawadzka</div><div style="font-size:10px;color:var(--muted);">Kardiolog · Instruktor</div></div>
+    </div>
+    <button onclick="toggleChat('comms-hub')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">✕</button>
+  </div>
+  <div class="comms-body" id="comms-messages">
+    <div class="msg-wrapper received"><div class="msg received">Witaj w systemie CARDIO. Wybierz moduł z ekranu głównego. Zacznij od Teorii — czeka na Ciebie model 3D serca!</div></div>
+  </div>
+  <div class="typing-indicator" id="comms-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+  <div class="comms-footer">
+    <input type="text" class="comms-input" id="comms-input" placeholder="Napisz do dr Zawadzkiej..." onkeydown="if(event.key==='Enter')sendComms('comms')">
+    <button class="comms-send-btn" onclick="sendComms('comms')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
+</div>
+
+<div id="peer-hub" class="drag-window" style="right:30px;bottom:100px;width:305px;">
+  <div class="drag-header">
+    <div style="display:flex;align-items:center;gap:11px;pointer-events:none;">
+      <div class="comms-avatar" style="border-color:var(--success);color:var(--success);">MK<div class="comms-status-dot" style="background:var(--success);"></div></div>
+      <div style="line-height:1.2;"><div style="font-weight:600;font-size:13px;">Michał (Kadet)</div><div style="font-size:10px;color:var(--muted);">Ekspedycja Bio. #3</div></div>
+    </div>
+    <button onclick="toggleChat('peer-hub')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">✕</button>
+  </div>
+  <div class="comms-body" id="peer-messages">
+    <div class="msg-wrapper received"><div class="msg received">Hej! Też masz biologię z sercem? Ten model 3D wygląda niesamowicie, ale nie wiem od czego zacząć...</div></div>
+  </div>
+  <div class="typing-indicator" id="peer-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+  <div class="quick-replies" id="peer-qr-container"></div>
+  <div class="comms-footer">
+    <input type="text" class="comms-input" id="peer-input" placeholder="Napisz do Michała..." onkeydown="if(event.key==='Enter')sendComms('peer')">
+    <button class="comms-send-btn" style="background:var(--success);" onclick="sendComms('peer')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
+</div>
+
+<div id="fab-instructor" class="chat-fab" onclick="toggleChat('comms-hub')">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</div>
+<div id="fab-peer" class="chat-fab" onclick="toggleChat('peer-hub')">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+</div>
+
+<!-- PRE-FLIGHT -->
+<div id="pre-flight-overlay">
+  <div class="boarding-modal">
+    <h2 class="boarding-header" id="pf-header">❤️ PRZYGOTOWANIE DO MISJI</h2>
+    <div class="checklist" id="pf-checklist"></div>
+    <button id="btn-start-flight" class="btn-takeoff" disabled onclick="initiateTakeoff()">Rozpocznij lekcję</button>
+  </div>
+</div>
+
+<!-- LEAK OVERLAY -->
+<div id="leak-overlay">
+  <h2 style="font-family:'Lexend Peta',sans-serif;font-size:30px;letter-spacing:2px;">⚠ OPUSZCZONO STREFĘ</h2>
+  <p style="margin:20px 0;font-size:16px;">Wykryto opuszczenie okna egzaminu. Wróć natychmiast.</p>
+  <button class="btn" style="background:white;color:var(--red);font-weight:700;" onclick="dismissLeakAlert()">Potwierdzam powrót</button>
+</div>
+
+<div id="copy-helper" onclick="copyToLogbook()">📋 Kopiuj do Notatnika</div>
+
+<!-- MAIN MENU -->
+<div id="main-menu">
+  <h1 class="menu-title">❤️ CARDIO</h1>
+  <p class="menu-subtitle">Interaktywny Kurs Biologii · Budowa i Funkcja Serca · Poziom Liceum</p>
+  <div class="menu-cards">
+    <div class="menu-card" id="card-training" onclick="setupModule('training')">
+      <div class="menu-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <h3>Faza I: Teoria</h3>
+      <p>Film wprowadzający, artykuł naukowy z animowanym słownikiem, interaktywny model 3D serca i infografika cyklu pracy serca.</p>
+    </div>
+    <div class="menu-card locked" id="card-simulator">
+      <div class="lock-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ZABLOKOWANE</div>
+      <div class="menu-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <h3>Faza II: Symulator</h3>
+      <p>Analizuj wyniki EKG i ciśnienia krwi, identyfikuj nieprawidłowości i wydaj diagnozę kardiologiczną.</p>
+    </div>
+    <div class="menu-card locked" id="card-exam">
+      <div class="lock-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>ZABLOKOWANE</div>
+      <div class="menu-icon" style="background:var(--gold-dim);color:var(--gold);"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <h3>Faza III: Live Exam</h3>
+      <p>Test wiedzy z limitem czasu, systemem anty-cheat i funkcją Lifeline dla trudnych pytań.</p>
+    </div>
+  </div>
+  <button class="btn-reset" onclick="resetProgress()">↻ Zresetuj postęp (odblokuj kłódki)</button>
+</div>
+
+<!-- LOGBOOK TRIGGER -->
+<div id="logbook-trigger" class="side-trigger left" onclick="toggleSidePanel('logbook')">
+  <div class="trigger-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>
+  <span class="trigger-label">NOTATNIK</span>
+</div>
+<aside id="logbook" class="side-panel left">
+  <div class="panel-header">
+    <div style="display:flex;align-items:center;gap:8px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg> Notatnik Badacza</div>
+    <button onclick="toggleSidePanel('logbook')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">✕</button>
+  </div>
+  <textarea id="logbook-textarea" class="logbook-textarea" placeholder="Zaznacz tekst w artykule, by tu skopiować...&#10;&#10;Twoje notatki są prywatne."></textarea>
+</aside>
+
+<!-- ATLAS TRIGGER -->
+<div id="airdrop-trigger" class="side-trigger right" onclick="toggleSidePanel('cargo')">
+  <div class="trigger-box" style="background:var(--gold);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+  <span class="trigger-label" style="color:var(--gold);">ATLAS</span>
+</div>
+<aside id="cargo" class="side-panel right" style="border-left:1px solid var(--border);">
+  <div class="panel-header" style="color:var(--text);">
+    <span>Atlas Kardiologiczny</span>
+    <button onclick="toggleSidePanel('cargo')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;">✕</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;overflow-y:auto;">
+    <div class="note-card"><strong>JAMY SERCA</strong>Przedsionek prawy (PP) · Komora prawa (KP) · Przedsionek lewy (PL) · Komora lewa (KL). Lewa strona pompuje krew do krążenia dużego (całe ciało), prawa — do krążenia małego (płuca).</div>
+    <div class="note-card"><strong>ZASTAWKI</strong>Trójdzielna (PP→KP) · Płucna (KP→pień płucny) · Dwudzielna/mitralna (PL→KL) · Aortalna (KL→aorta). Zapobiegają cofaniu się krwi.</div>
+    <div class="note-card"><strong>UKŁAD BODŹCO-PRZEWODZĄCY</strong>Węzeł zatokowo-przedsionkowy (SA) — naturalny rozrusznik, ~70 imp/min · Węzeł przedsionkowo-komorowy (AV) · Pęczek Hisa · Włókna Purkinjego</div>
+    <div class="note-card"><strong>PARAMETRY FIZJOLOGICZNE</strong>Tętno spoczynkowe: 60–100/min · Ciśnienie optymalne: 120/80 mmHg · Pojemność minutowa: ~5 L/min · Czas trwania cyklu: ~0,8 s</div>
+    <div class="note-card"><strong>KRĄŻENIE WIEŃCOWE</strong>Tętnica wieńcowa lewa (LAD, Cx) · Tętnica wieńcowa prawa (RCA) · Żyły wieńcowe → zatoka wieńcowa → PP. Zawał = niedokrwienie mięśnia sercowego.</div>
+  </div>
+</aside>
+
+<!-- ══ MODULE 1: TEORIA ══ -->
+<main class="module-container" id="module-training">
+  <div class="flight-path-timeline">
+    <div class="timeline-line"></div><div class="timeline-fill" id="train-fill"></div>
+    <div class="waypoint-node active" id="train-node-0"><div class="waypoint-dot"></div><span class="waypoint-label">Film</span></div>
+    <div class="waypoint-node" id="train-node-1"><div class="waypoint-dot"></div><span class="waypoint-label">Artykuł</span></div>
+    <div class="waypoint-node" id="train-node-2"><div class="waypoint-dot"></div><span class="waypoint-label">Check A</span></div>
+    <div class="waypoint-node" id="train-node-3"><div class="waypoint-dot"></div><span class="waypoint-label">Model 3D</span></div>
+    <div class="waypoint-node" id="train-node-4"><div class="waypoint-dot"></div><span class="waypoint-label">Cykl</span></div>
+    <div class="waypoint-node" id="train-node-5"><div class="waypoint-dot"></div><span class="waypoint-label">Check B</span></div>
+    <div class="waypoint-node" id="train-node-6"><div class="waypoint-dot"></div><span class="waypoint-label">Sukces</span></div>
+  </div>
+  <div class="lesson-card">
+
+    <!-- WP0: FILM PLACEHOLDER -->
+    <div class="wp-section active" id="train-wp-0">
+      <div class="phase-badge">Odprawa — Film Wprowadzający</div>
+
+      <!-- PLACEHOLDER NA FILMIK — wklej tu src iframe gdy będziesz mieć link -->
+      <div class="video-placeholder" onclick="this.style.opacity='0.7'">
+        <div class="video-placeholder-badge">▶ FILM EDUKACYJNY</div>
+        <div class="video-play-btn">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="video-placeholder-text">
+          <h3>Budowa i Funkcja Serca</h3>
+          <p style="color:var(--muted);font-size:12px;">Wklej link do filmiku — zastąp ten placeholder tagiem &lt;iframe&gt;</p>
+        </div>
+      </div>
+      <!-- ═══════════════════════════════════════════════════════
+           INSTRUKCJA: Gdy masz link do filmiku, usuń div.video-placeholder
+           powyżej i wklej w jego miejsce:
+
+           <div style="border-radius:14px;overflow:hidden;border:1px solid var(--border);flex-shrink:0;">
+             <iframe width="100%" style="aspect-ratio:16/9;display:block;border:none;"
+               src="TWÓJ_LINK_TUTAJ"
+               allow="autoplay; fullscreen" allowfullscreen></iframe>
+           </div>
+           ═══════════════════════════════════════════════════════ -->
+
+      <div class="video-hint-box">
+        <div class="video-hint-icon">🫀</div>
+        <div class="video-hint-text">
+          <strong>CO OBSERWOWAĆ W FILMIE?</strong>
+          Zwróć uwagę na <strong style="color:var(--red);">cztery jamy serca</strong> i kierunek przepływu krwi. Obserwuj, jak zastawki otwierają się i zamykają. Zapamiętaj różnicę między <strong style="color:var(--red);">krążeniem małym</strong> (serce → płuca → serce) a <strong style="color:var(--red);">krążeniem dużym</strong> (serce → ciało → serce). Te elementy pojawią się w dalszej części lekcji i na egzaminie.
+        </div>
+      </div>
+
+      <h2 style="font-family:'Lexend Peta',sans-serif;font-size:18px;margin-top:18px;margin-bottom:8px;">Wprowadzenie: Pompa życia</h2>
+      <p style="font-size:14px;color:var(--muted);line-height:1.6;">Serce człowieka bije około 100 000 razy na dobę, przepompowując łącznie ok. 7 000 litrów krwi. W kolejnych krokach poznasz jego budowę i zasadę działania.</p>
+    </div>
+
+    <!-- WP1: ARTYKUŁ -->
+    <div class="wp-section" id="train-wp-1">
+      <div class="phase-badge">Artykuł Naukowy</div>
+      <div class="manual-header">
+        <div>
+          <div style="font-family:'Lexend Peta',sans-serif;font-size:17px;margin-bottom:7px;">Budowa i Czynność Serca Człowieka</div>
+          <div class="article-meta"><span>PROF. DR HAB. M. KOWALCZYK</span><span>BIOLOGIA CZŁOWIEKA · PWN 2023</span><span>DOI: 10.2023/BIO.047</span></div>
+        </div>
+        <button class="btn-tts" onclick="toggleTTS('article-text-1',this)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>Czytaj na głos
+        </button>
+      </div>
+      <div class="manual-text" id="article-text-1">
+        <p>Serce jest narządem mięśniowym zlokalizowanym w śródpiersiu, lekko przesuniętym ku lewej stronie. Stanowi centralny element <span class="keyword" data-def="Układ krążenia (sercowo-naczyniowy): składa się z serca jako pompy oraz naczyń krwionośnych — tętnic, żył i naczyń włosowatych. Transportuje krew z O₂, składnikami odżywczymi i hormonami do wszystkich komórek ciała.">układu krążenia</span>, którego zadaniem jest ciągłe zaopatrywanie tkanek w tlen i substancje odżywcze.<sup class="sup-note">¹</sup></p>
+        <h3>Budowa Anatomiczna</h3>
+        <p>Serce jest zbudowane z czterech jam: dwóch <span class="keyword" data-def="Przedsionki (atria): górne jamy serca. Przedsionek prawy przyjmuje krew odtlenowaną z żył głównych. Przedsionek lewy przyjmuje krew utlenowaną z żył płucnych.">przedsionków</span> (prawy i lewy) oraz dwóch <span class="keyword" data-def="Komory (ventriculi): dolne jamy serca — główna pompa. Komora prawa wysyła krew do płuc (krążenie małe). Komora lewa, o grubszej ścianie, pompuje krew do całego ciała (krążenie duże).">komór</span> (prawa i lewa). Przegrodą międzyprzedsionkową i międzykomorową serce jest podzielone na prawą i lewą połowę, które normalnie nie komunikują się ze sobą.<sup class="sup-note">²</sup></p>
+        <h3>Zastawki Sercowe</h3>
+        <p>Prawidłowy, jednokierunkowy przepływ krwi zapewniają cztery <span class="keyword" data-def="Zastawki serca: bierne struktury fibroelastyczne, które otwierają się i zamykają pod wpływem różnicy ciśnień. Przy niedomykalności — krew cofa się (regurgitacja). Przy zwężeniu (stenozie) — utrudniony przepływ.">zastawki</span>: trójdzielna (między PP a KP), płucna (KP → pień płucny), dwudzielna/mitralna (PL → KL) oraz aortalna (KL → aorta).<sup class="sup-note">³</sup></p>
+        <h3>Układ Bodźco-Przewodzący</h3>
+        <p>Rytmiczne skurcze serca są generowane przez wyspecjalizowane komórki mięśniowe tworzące <span class="keyword" data-def="Układ bodźco-przewodzący: węzeł SA (rozrusznik, ok. 70/min) → węzeł AV → pęczek Hisa → odnogi → włókna Purkinjego. Umożliwia skoordynowany skurcz całego serca.">układ bodźco-przewodzący</span>. Węzeł zatokowo-przedsionkowy (SA) jest naturalnym rozrusznikiem serca i generuje ok. 70 impulsów na minutę.<sup class="sup-note">⁴</sup></p>
+        <h3>Krążenie Małe i Duże</h3>
+        <p>Serce działa jak podwójna pompa. <span class="keyword" data-def="Krążenie małe (płucne): krew odtlenowana z komory prawej → tętnica płucna → płuca (wymiana gazowa) → żyły płucne → przedsionek lewy. Ciśnienie niskie.">Krążenie małe</span> — prawa połowa serca kieruje krew do płuc w celu wymiany gazowej. <span class="keyword" data-def="Krążenie duże (systemowe): krew utlenowana z komory lewej → aorta → tętnice → tkanki → żyły → żyły główne → przedsionek prawy. Ciśnienie wysokie.">Krążenie duże</span> — lewa połowa pompuje utlenowaną krew do wszystkich tkanek organizmu przez aortę.<sup class="sup-note">⁵</sup></p>
+        <div class="article-footnotes">
+          <p>¹ Netter F.H., Atlas of Human Anatomy, 7th ed., Elsevier 2019, s. 214.</p>
+          <p>² Bochenek A., Reicher M., Anatomia Człowieka, tom III, PZWL 2021.</p>
+          <p>³ Sadler T.W., Langman's Medical Embryology, 14th ed., Wolters Kluwer 2019.</p>
+          <p>⁴ Guyton A.C., Hall J.E., Textbook of Medical Physiology, 13th ed., Elsevier 2016, s. 106–118.</p>
+          <p>⁵ Widmaier E.P. i in., Vander's Human Physiology, 15th ed., McGraw-Hill 2019.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WP2: CHECK A -->
+    <div class="wp-section" id="train-wp-2">
+      <div class="phase-badge">Check Alpha</div>
+      <div class="ac-question">Która zastawka oddziela przedsionek lewy od komory lewej?</div>
+      <div class="ac-options">
+        <button class="ac-btn" onclick="handleTrainCheck('A',this,false)">A. Zastawka trójdzielna</button>
+        <button class="ac-btn" onclick="handleTrainCheck('A',this,true)">B. Zastawka dwudzielna (mitralna)</button>
+        <button class="ac-btn" onclick="handleTrainCheck('A',this,false)">C. Zastawka aortalna</button>
+        <button class="ac-btn" onclick="handleTrainCheck('A',this,false)">D. Zastawka płucna</button>
+      </div>
+      <p id="train-fb-A" style="margin-top:14px;font-weight:600;display:none;"></p>
+    </div>
+
+    <!-- WP3: MODEL 3D SERCA -->
+    <div class="wp-section" id="train-wp-3">
+      <div class="phase-badge">Model 3D — Interaktywny</div>
+      <h2 style="font-family:'Lexend Peta',sans-serif;font-size:17px;margin-bottom:6px;">Obejrzyj model anatomiczny serca</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;">Obróć model w każdą stronę, przybliż i oddalaj. Znajdź i zapamiętaj wszystkie cztery jamy serca, zastawki i wielkie naczynia. Wykonaj zadanie poniżej, by odblokować kolejny etap.</p>
+
+      <!-- OSTRZEŻENIE O TREŚCI ANATOMICZNEJ -->
+      <div id="anatomy-warning" style="position:relative;border-radius:14px;overflow:hidden;border:1px solid rgba(245,166,35,0.35);background:linear-gradient(135deg,rgba(22,12,4,0.98),rgba(18,10,3,0.98));padding:32px 28px;display:flex;flex-direction:column;gap:20px;flex-shrink:0;">
+        <div style="position:absolute;top:0;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,rgba(245,166,35,0.6),transparent);"></div>
+        <div style="display:flex;align-items:flex-start;gap:18px;">
+          <div style="width:52px;height:52px;border-radius:12px;background:rgba(245,166,35,0.12);border:1px solid rgba(245,166,35,0.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div style="flex-grow:1;">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#f5a623;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Treść Anatomiczna — Informacja</div>
+            <p style="font-size:14px;color:rgba(255,240,210,0.9);line-height:1.7;margin-bottom:10px;">Następny krok zawiera <strong style="color:#fff;">realistyczny model 3D serca człowieka</strong> — szczegółowe odwzorowanie anatomiczne narządu wewnętrznego, w tym jam serca, naczyń krwionośnych i tkanek mięśniowych.</p>
+            <p style="font-size:13px;color:rgba(245,166,35,0.8);line-height:1.6;">Model ma charakter <strong style="color:rgba(245,166,35,0.95);">czysto edukacyjny</strong> — jest standardową pomocą dydaktyczną stosowaną w szkołach i na uczelniach medycznych. Jeśli masz wrażliwość na tego typu treści, możesz poinformować nauczyciela przed przystąpieniem do tego etapu.</p>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;padding-top:16px;border-top:1px solid rgba(245,166,35,0.12);">
+          <div style="font-size:13px;color:rgba(255,240,210,0.65);font-style:italic;">Czy chcesz przejść do modelu?</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onclick="dismissAnatomyWarning()" style="background:#f5a623;color:#0e0608;border:none;padding:11px 26px;border-radius:9px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;letter-spacing:0.3px;">✓ Tak, rozumiem — pokaż model</button>
+            <button onclick="skipToNext()" style="background:transparent;color:rgba(255,240,210,0.55);border:1px solid rgba(255,240,210,0.18);padding:11px 20px;border-radius:9px;font-weight:500;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;">Pomiń model / Powiadom nauczyciela</button>
+          </div>
+          <div style="font-size:10px;color:rgba(245,166,35,0.4);font-family:'Space Mono',monospace;letter-spacing:0.5px;margin-top:2px;">EDUAIR · CARDIO · Etap 4 z 7 · Treść: Model Anatomiczny 3D</div>
+        </div>
+        <div style="position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(245,166,35,0.25),transparent);"></div>
+      </div>
+
+      <!-- MODEL (ukryty do czasu akceptacji) -->
+      <div id="model-content" style="display:none;flex-direction:column;gap:16px;">
+
+      <div class="model-wrap">
+        <div class="model-badge">
+          MODEL 3D · serce.glb
+        </div>
+        <model-viewer
+          id="heart-model"
+          src="serce.glb"
+          alt="Model anatomiczny serca człowieka"
+          camera-controls
+          auto-rotate
+          auto-rotate-delay="2000"
+          rotation-per-second="20deg"
+          shadow-intensity="1"
+          exposure="1.1"
+          environment-image="neutral"
+          style="background:linear-gradient(135deg,#150308 0%,#0e0205 100%);"
+          poster=""
+        >
+          <!-- Fallback gdy brak pliku -->
+          <div slot="poster" style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:16px;color:rgba(232,48,74,0.7);">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" style="animation:heartbeat 1.2s ease-in-out infinite;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:rgba(232,48,74,0.6);text-align:center;letter-spacing:1px;">Ładowanie modelu serce.glb…<br><span style="font-size:10px;opacity:0.6;">upewnij się, że plik jest w tym samym folderze</span></div>
+          </div>
+        </model-viewer>
+        <div class="model-controls-hint">🖱 Przeciągnij · Scroll = zoom · Dwuklik = reset</div>
+      </div>
+
+      <!-- ZADANIE DO MODELU -->
+      <div class="task-box">
+        <div class="task-box-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+          ZADANIE — ZANIM PRZEJDZIESZ DALEJ
+        </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:6px;">Obróć model i znajdź poniższe struktury. Zaznacz każdą po znalezieniu — to odblokuje kolejny krok.</p>
+        <div class="task-progress-bar"><div class="task-progress-fill" id="task-pbar" style="width:0%"></div></div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin:6px 0 10px;"><span id="task-done-count">0</span>/5 wykonanych</div>
+        <div class="task-checklist" id="task-checklist">
+          <div class="task-check-item" onclick="checkTask(this,0)">
+            <div class="tchk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><strong style="color:var(--text);">Komora lewa</strong> — znajdź największą, mięsistą jamę z lewej strony. To główna pompa ciała.</div>
+          </div>
+          <div class="task-check-item" onclick="checkTask(this,1)">
+            <div class="tchk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><strong style="color:var(--text);">Komora prawa</strong> — po prawej stronie, cieńsza ścianka. Pompuje krew do płuc.</div>
+          </div>
+          <div class="task-check-item" onclick="checkTask(this,2)">
+            <div class="tchk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><strong style="color:var(--text);">Aorta</strong> — największe naczynie wychodzące z lewej komory. Łuk aorty widoczny od góry.</div>
+          </div>
+          <div class="task-check-item" onclick="checkTask(this,3)">
+            <div class="tchk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><strong style="color:var(--text);">Pień płucny</strong> — wychodzi z komory prawej. Rozdziela się na tętnicę płucną lewą i prawą.</div>
+          </div>
+          <div class="task-check-item" onclick="checkTask(this,4)">
+            <div class="tchk"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div><strong style="color:var(--text);">Tętnice wieńcowe</strong> — drobne naczynia biegnące po powierzchni serca. Odżywiają mięsień sercowy.</div>
+          </div>
+        </div>
+        <div class="task-done-msg" id="task-done-msg">✓ Brawo! Znalazłeś wszystkie struktury. Możesz przejść dalej.</div>
+      </div>
+
+      </div><!-- /model-content -->
+
+      <!-- POMINIĘTO -->
+      <div id="model-skipped" style="display:none;padding:20px 22px;background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.18);border-radius:12px;">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:#f5a623;letter-spacing:1.5px;margin-bottom:8px;font-weight:700;">MODEL POMINIĘTY</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:12px;">Model 3D serca został pominięty. Zadanie zaliczone automatycznie — możesz przejść dalej. W razie potrzeby wróć do tego etapu przyciskiem <strong style="color:var(--text);">Wstecz</strong>.</p>
+        <button onclick="showModelAnyway()" style="background:transparent;border:1px solid rgba(245,166,35,0.4);color:#f5a623;padding:8px 16px;border-radius:8px;font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;font-weight:600;">↩ Pokaż model jednak</button>
+      </div>
+
+    </div>
+
+    <!-- WP4: INFOGRAFIKA CYKLU SERCA -->
+    <div class="wp-section" id="train-wp-4">
+      <div class="phase-badge">Infografika Interaktywna</div>
+      <h2 style="font-family:'Lexend Peta',sans-serif;font-size:17px;margin-bottom:6px;">Cykl Pracy Serca (Cykl Sercowy)</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;">Kliknij każdą fazę cyklu sercowego, aby poznać, co dzieje się z komorami, zastawkami i ciśnieniem. Jeden pełny cykl trwa około 0,8 sekundy.</p>
+      <div class="infographic-outer">
+        <div class="infographic-title">Fazy Cyklu Sercowego — Systola i Diastola</div>
+        <div class="process-steps">
+          <div class="process-step" id="step-0" onclick="activateStep(0)">
+            <div class="step-circle">🫀</div>
+            <div class="step-name">Rozkurcz</div>
+            <div class="step-desc">Faza diastoliczna. Komory się rozkurczają i wypełniają krwią z przedsionków. Zastawki AV otwarte, półksiężycowate zamknięte.</div>
+            <div class="step-law-ref">ok. 0,5 s</div>
+          </div>
+          <div class="process-step" id="step-1" onclick="activateStep(1)">
+            <div class="step-circle">💥</div>
+            <div class="step-name">Skurcz PP</div>
+            <div class="step-desc">Przedsionki się kurczą, dopełniając komory. Wzrost ciśnienia w przedsionkach. Dodaje ok. 20% objętości końcoworozkurczowej.</div>
+            <div class="step-law-ref">ok. 0,1 s</div>
+          </div>
+          <div class="process-step" id="step-2" onclick="activateStep(2)">
+            <div class="step-circle">🔒</div>
+            <div class="step-name">Skurcz Izowolem.</div>
+            <div class="step-desc">Komory zaczynają się kurczyć, wszystkie zastawki zamknięte. Ciśnienie rośnie bez zmiany objętości. Ton I serca (lub też „lub").</div>
+            <div class="step-law-ref">ok. 0,05 s</div>
+          </div>
+          <div class="process-step" id="step-3" onclick="activateStep(3)">
+            <div class="step-circle">🚀</div>
+            <div class="step-name">Wyrzut Krwi</div>
+            <div class="step-desc">Ciśnienie w komorach przekracza ciśnienie w aorcie/pniu płucnym. Zastawki półksiężycowate otwierają się. Wyrzut ok. 70 ml krwi.</div>
+            <div class="step-law-ref">ok. 0,3 s</div>
+          </div>
+          <div class="process-step" id="step-4" onclick="activateStep(4)">
+            <div class="step-circle">🔄</div>
+            <div class="step-name">Rozkurcz Izowolem.</div>
+            <div class="step-desc">Komory rozkurczają się, zastawki półksiężycowate zamykają (ton II — „dub"). Ciśnienie spada poniżej ciśnienia w przedsionkach.</div>
+            <div class="step-law-ref">ok. 0,08 s</div>
+          </div>
+        </div>
+        <div class="infographic-hint">▲ Kliknij fazę, aby zobaczyć szczegóły</div>
+      </div>
+      <div style="margin-top:14px;padding:13px 16px;background:var(--opt-bg);border-radius:10px;border:1px solid var(--border);font-size:13px;line-height:1.6;color:var(--muted);">
+        ❤️ <strong style="color:var(--text);">Zapamiętaj:</strong> Tony serca to dźwięki zamykania zastawek. Ton I (lub) = zamknięcie zastawek AV (mitralnej i trójdzielnej) → początek skurczu. Ton II (dub) = zamknięcie zastawek półksiężycowatych → koniec skurczu.
+      </div>
+    </div>
+
+    <!-- WP5: CHECK B -->
+    <div class="wp-section" id="train-wp-5">
+      <div class="phase-badge">Check Bravo</div>
+      <div class="ac-question">Która część serca jest główną pompą krążenia dużego i dlatego ma najgrubszą ścianę?</div>
+      <div class="ac-options">
+        <button class="ac-btn" onclick="handleTrainCheck('B',this,false)">A. Przedsionek prawy</button>
+        <button class="ac-btn" onclick="handleTrainCheck('B',this,false)">B. Komora prawa</button>
+        <button class="ac-btn" onclick="handleTrainCheck('B',this,false)">C. Przedsionek lewy</button>
+        <button class="ac-btn" onclick="handleTrainCheck('B',this,true)">D. Komora lewa</button>
+      </div>
+      <p id="train-fb-B" style="margin-top:14px;font-weight:600;display:none;"></p>
+    </div>
+
+    <!-- WP6: SUCCESS -->
+    <div class="wp-section landing-view" id="train-wp-6">
+      <div class="landing-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <h2 class="landing-title">Teoria Zakończona!</h2>
+      <p style="color:var(--muted);margin-bottom:22px;">Świetnie! Teraz czas na symulator kardiologiczny — wcielisz się w rolę lekarza interpretującego badania.</p>
+      <button class="btn btn-primary" onclick="completeModule('training')">Wróć do Menu (Zapisz Postęp)</button>
+    </div>
+
+    <div class="lesson-footer" id="train-footer">
+      <button class="btn btn-outline" id="train-prev" onclick="navTrain(-1)" disabled>Wstecz</button>
+      <button class="btn btn-primary" id="train-next" onclick="navTrain(1)">Dalej</button>
+    </div>
+  </div>
+</main>
+
+<!-- ══ MODULE 2: SYMULATOR ══ -->
+<main class="module-container" id="module-simulator">
+  <div class="flight-path-timeline">
+    <div class="timeline-line"></div><div class="timeline-fill" id="sim-fill"></div>
+    <div class="waypoint-node active" id="sim-node-0"><div class="waypoint-dot"></div><span class="waypoint-label">Dane</span></div>
+    <div class="waypoint-node" id="sim-node-1"><div class="waypoint-dot"></div><span class="waypoint-label">EKG</span></div>
+    <div class="waypoint-node" id="sim-node-2"><div class="waypoint-dot"></div><span class="waypoint-label">Diagnoza</span></div>
+    <div class="waypoint-node" id="sim-node-3"><div class="waypoint-dot"></div><span class="waypoint-label">Sukces</span></div>
+  </div>
+  <div class="lesson-card">
+
+    <!-- SIM WP0: ANALIZA DANYCH -->
+    <div class="wp-section active" id="sim-wp-0">
+      <div class="phase-badge">Przypadek KRD/2024/0045 — Analiza Kardiologiczna</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6;">Jako <strong style="color:var(--text);">lekarz prowadzący</strong>, zapoznaj się z kartą pacjenta i wynikami badań. Kliknij <span style="background:var(--red-dim);padding:1px 6px;border-radius:3px;font-weight:600;color:var(--red);">podświetlone wartości</span>, aby oznaczyć nieprawidłowości. Znajdź minimum 2, by przejść dalej.</p>
+      <div class="evidence-grid" id="evidence-grid">
+        <div class="evidence-card">
+          <div class="ev-number">🏥 Karta Pacjenta</div>
+          <div class="ev-icon">🧑</div>
+          <div class="ev-title">Jan K., lat 58</div>
+          <div class="ev-content">Skargi: bóle zamostkowe przy wysiłku, duszność.<br><br><strong>Tętno:</strong> <span class="ev-highlight" data-note="Tętno 112/min — tachykardia! Norma spoczynkowa: 60–100/min" onclick="markEvidence(this,0)">112/min</span><br><strong>Ciśnienie:</strong> <span class="ev-highlight" data-note="Ciśnienie 165/100 mmHg — nadciśnienie II stopnia! Norma: &lt;140/90 mmHg" onclick="markEvidence(this,1)">165/100 mmHg</span><br><strong>Sat. O₂:</strong> 97%</div>
+        </div>
+        <div class="evidence-card">
+          <div class="ev-number">📋 Wyniki Laboratoryjne</div>
+          <div class="ev-icon">🔬</div>
+          <div class="ev-title">Badania krwi</div>
+          <div class="ev-content">„Troponina sercowa I: <span class="ev-highlight" data-note="Troponina 0,8 ng/mL — znacznie podwyższona! Norma: &lt;0,04 ng/mL. Wskazuje na uszkodzenie mięśnia sercowego." onclick="markEvidence(this,2)">0,8 ng/mL</span><br><br>Cholesterol LDL: 4,2 mmol/L (podwyższony)<br>CRP: 12 mg/L (podwyższone)<br>Morfologia: w normie"</div>
+        </div>
+        <div class="evidence-card">
+          <div class="ev-number">💊 Wywiad Lekarski</div>
+          <div class="ev-icon">📝</div>
+          <div class="ev-title">Wywiad i Historia Choroby</div>
+          <div class="ev-content">Palacz: <strong>tak</strong>, 30 paczkolat<br>Cukrzyca: typ 2 od 5 lat<br>BMI: 31 (otyłość I°)<br><br>Dolegliwości od: <span class="ev-highlight" data-note="Dolegliwości od 3h — ostry zespół wieńcowy! Ból trwający &gt;20 min to sygnał alarmowy wymagający pilnej diagnostyki EKG." onclick="markEvidence(this,3)">ok. 3 godzin</span><br>Ból oceniany: 8/10 (NRS)</div>
+        </div>
+      </div>
+      <div class="contradiction-panel">
+        <div class="contradiction-title">⚡ Wykryte nieprawidłowości (<span id="contra-count">0</span>/3)</div>
+        <div class="contradiction-list">
+          <div class="c-item" id="ci-0"><div class="c-item-icon"></div>Tachykardia spoczynkowa — tętno powyżej normy (>100/min)</div>
+          <div class="c-item" id="ci-1"><div class="c-item-icon"></div>Nadciśnienie tętnicze II stopnia — ciśnienie ≥160/100 mmHg</div>
+          <div class="c-item" id="ci-2"><div class="c-item-icon"></div>Podwyższona troponina + ból od 3h = możliwy ostry zawał serca (NSTEMI/STEMI)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIM WP1: EKG -->
+    <div class="wp-section" id="sim-wp-1">
+      <div class="phase-badge">Analiza EKG</div>
+      <h2 style="font-family:'Lexend Peta',sans-serif;font-size:19px;margin-bottom:8px;">Interpretacja zapisu EKG</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.5;">Przesuń suwak czasowy, aby przeanalizować poszczególne elementy zapisu i zobaczyć, co oznaczają w kontekście cyklu sercowego.</p>
+      <div style="padding:24px;background:var(--card2);border:1px solid var(--border);border-radius:14px;margin-bottom:18px;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+          <div id="tl-time" style="font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--red);background:var(--red-dim);padding:8px 16px;border-radius:10px;border:1px solid rgba(232,48,74,0.25);min-width:80px;text-align:center;">P</div>
+          <input type="range" id="tl-slider" min="0" max="5" value="0" step="1" style="flex-grow:1;accent-color:var(--red);cursor:pointer;" oninput="updateECG(this.value)">
+        </div>
+        <!-- SVG EKG -->
+        <svg id="ekg-svg" viewBox="0 0 800 140" style="width:100%;border-radius:8px;background:#060a0e;border:1px solid var(--border);">
+          <defs>
+            <filter id="ekg-glow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <!-- Grid -->
+          <g stroke="rgba(232,48,74,0.08)" stroke-width="0.5">
+            <line x1="0" y1="28" x2="800" y2="28"/><line x1="0" y1="56" x2="800" y2="56"/>
+            <line x1="0" y1="84" x2="800" y2="84"/><line x1="0" y1="112" x2="800" y2="112"/>
+            <line x1="100" y1="0" x2="100" y2="140"/><line x1="200" y1="0" x2="200" y2="140"/>
+            <line x1="300" y1="0" x2="300" y2="140"/><line x1="400" y1="0" x2="400" y2="140"/>
+            <line x1="500" y1="0" x2="500" y2="140"/><line x1="600" y1="0" x2="600" y2="140"/>
+            <line x1="700" y1="0" x2="700" y2="140"/>
+          </g>
+          <!-- Baseline -->
+          <line x1="0" y1="70" x2="800" y2="70" stroke="rgba(232,48,74,0.2)" stroke-width="1"/>
+          <!-- EKG trace: P-QRS-T pattern repeated -->
+          <path id="ekg-path" d="M0,70 L60,70 L70,62 L80,70 L110,70 L115,68 L118,30 L121,110 L124,70 L130,70 L140,58 L155,82 L165,70 L260,70 L270,62 L280,70 L310,70 L315,68 L318,30 L321,110 L324,70 L330,70 L340,58 L355,82 L365,70 L460,70 L470,62 L480,70 L510,70 L515,68 L518,30 L521,110 L524,70 L530,70 L540,58 L555,82 L565,70 L660,70 L670,62 L680,70 L710,70 L715,68 L718,30 L721,110 L724,70 L730,70 L740,58 L755,82 L765,70 L800,70"
+            fill="none" stroke="#e8304a" stroke-width="2" filter="url(#ekg-glow)"/>
+          <!-- Highlight cursor -->
+          <line id="ekg-cursor" x1="0" y1="0" x2="0" y2="140" stroke="rgba(232,48,74,0.5)" stroke-width="2" stroke-dasharray="4,4"/>
+        </svg>
+        <div id="ekg-insight" style="margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6;padding:10px 14px;background:var(--opt-bg);border-radius:10px;border:1px solid var(--border);min-height:44px;">Przesuń suwak, aby analizować poszczególne fazy zapisu EKG...</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div style="padding:15px;background:var(--red-dim);border:1px solid rgba(232,48,74,0.2);border-radius:12px;">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--red);margin-bottom:6px;letter-spacing:1px;">NORMA EKG</div>
+          <p style="font-size:13px;line-height:1.6;">Rytm zatokowy, HR 60–100/min, odcinek ST w linii izoelektrycznej, prawidłowe załamki P, QRS &lt;0,12s</p>
+        </div>
+        <div style="padding:15px;background:rgba(197,160,89,0.08);border:1px solid rgba(197,160,89,0.25);border-radius:12px;">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);margin-bottom:6px;letter-spacing:1px;">U PACJENTA</div>
+          <p style="font-size:13px;line-height:1.6;">HR 112/min (tachykardia), <strong>uniesienie ST w odprowadzeniach V2–V4</strong> — podejrzenie zawału przedniej ściany</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIM WP2: DIAGNOZA -->
+    <div class="wp-section" id="sim-wp-2">
+      <div class="phase-badge">Diagnoza Kardiologiczna</div>
+      <h2 style="font-family:'Lexend Peta',sans-serif;font-size:19px;margin-bottom:8px;">Twoja Decyzja Diagnostyczna</h2>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.5;">Na podstawie karty pacjenta, wyników laboratoryjnych i EKG — postaw diagnozę roboczą i zdecyduj o postępowaniu.</p>
+      <div class="verdict-section">
+        <div class="verdict-title">❤️ JAKA JEST TWOJA DIAGNOZA ROBOCZA?</div>
+        <div class="verdict-options" style="grid-template-columns:1fr 1fr;">
+          <button class="verdict-btn" id="vb-zawał" onclick="selectVerdict('zawał',this)">🚨 Ostry zawał serca (STEMI)<br><small style="font-size:11px;opacity:0.7;">→ natychmiastowa koronarografia</small></button>
+          <button class="verdict-btn" id="vb-angina" onclick="selectVerdict('angina',this)">⚠️ Dusznica bolesna niestabilna<br><small style="font-size:11px;opacity:0.7;">→ hospitalizacja, obserwacja</small></button>
+          <button class="verdict-btn" id="vb-nt" onclick="selectVerdict('nt',this)">📊 Izolowane nadciśnienie<br><small style="font-size:11px;opacity:0.7;">→ leki hipotensyjne, ambulatoryjna</small></button>
+          <button class="verdict-btn" id="vb-zdrowy" onclick="selectVerdict('zdrowy',this)">✓ Pacjent zdrowy<br><small style="font-size:11px;opacity:0.7;">→ brak dalszej diagnostyki</small></button>
+        </div>
+        <button class="btn btn-primary" id="btn-submit-verdict" onclick="submitVerdict()" disabled>Zatwierdź diagnozę</button>
+      </div>
+      <div class="verdict-result" id="verdict-result"></div>
+    </div>
+
+    <!-- SIM WP3: SUCCESS -->
+    <div class="wp-section landing-view" id="sim-wp-3">
+      <div class="landing-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <h2 class="landing-title">Symulator Zakończony!</h2>
+      <p style="color:var(--muted);margin-bottom:22px;">Doskonała analiza przypadku kardiologicznego. Czas na ostateczny sprawdzian wiedzy.</p>
+      <button class="btn btn-primary" onclick="completeModule('simulator')">Wróć do Menu (Zapisz Postęp)</button>
+    </div>
+
+    <div class="lesson-footer" id="sim-footer">
+      <button class="btn btn-outline" id="sim-prev" onclick="navSim(-1)" disabled>Wstecz</button>
+      <button class="btn btn-primary" id="sim-next" onclick="navSim(1)" disabled>Zablokowane</button>
+    </div>
+  </div>
+</main>
+
+<!-- ══ MODULE 3: EGZAMIN ══ -->
+<main class="module-container" id="module-exam">
+  <div class="lesson-card" style="min-height:500px;">
+    <div class="progress-bar-container"><div class="progress-bar-fill" id="exam-progress"></div></div>
+    <div id="exam-quiz-view" style="display:flex;flex-direction:column;flex-grow:1;overflow-y:auto;min-height:0;">
+      <div class="question-header">
+        <span id="exam-q-counter" style="color:var(--gold);font-weight:700;font-family:'Space Mono',monospace;font-size:11px;">Q 1/7</span>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="btn-flag" id="exam-flag" onclick="toggleExamFlag()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></button>
+          <div class="seat-badge">CARDIO 2B</div>
+        </div>
+      </div>
+      <div id="exam-q-text" style="font-size:19px;padding:10px 40px 18px;line-height:1.4;"></div>
+      <div class="exam-options" id="exam-options" style="padding:0 40px 18px;display:flex;flex-direction:column;flex-grow:1;"></div>
+      <div class="exam-fp" id="exam-fp"></div>
+      <div class="lesson-footer" style="justify-content:space-between;">
+        <div style="display:flex;gap:14px;flex-wrap:wrap;">
+          <button class="btn btn-outline" id="exam-prev" onclick="navExam(-1)">Wstecz</button>
+          <button class="btn-oxygen" id="btn-oxygen" onclick="deployOxygenMask()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+            Lifeline (<span id="oxygen-count">1</span>)
+          </button>
+        </div>
+        <button class="btn btn-primary" id="exam-next" onclick="navExam(1)">Dalej</button>
+      </div>
+    </div>
+    <div id="exam-bb-view" style="display:none;flex-direction:column;align-items:center;justify-content:flex-start;flex-grow:1;padding:40px;overflow-y:auto;">
+      <h2 style="font-family:'Lexend Peta',sans-serif;margin-bottom:18px;margin-top:18px;">PRZEGLĄD ODPOWIEDZI</h2>
+      <p style="color:var(--muted);margin-bottom:28px;font-size:14px;">Sprawdź odpowiedzi przed ostatecznym oddaniem testu.</p>
+      <div class="exam-fp" id="exam-bb-grid" style="gap:13px;"></div>
+      <button class="btn btn-primary" onclick="finishExam()" style="margin-top:28px;padding:14px 36px;">Zakończ i sprawdź wynik</button>
+    </div>
+    <div id="exam-result-view" class="landing-view" style="display:none;">
+      <div class="landing-icon" id="result-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+      <h2 class="landing-title">Egzamin Zakończony</h2>
+      <div style="width:100px;height:100px;border-radius:50%;border:5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;margin:18px 0;" id="exam-score">0/7</div>
+      <p id="exam-result-msg" style="color:var(--muted);margin-bottom:20px;font-style:italic;font-size:14px;"></p>
+      <button class="btn btn-outline" onclick="exitModule()">Wróć do Menu</button>
+    </div>
+  </div>
+</main>
+
+<script>
+/* ══ STATE ══ */
+let activeModule=null,userProgress=parseInt(localStorage.getItem('cardio_v1'))||0,janekTimer=null;
+
+function renderDashboard(){
+  const sim=document.getElementById('card-simulator'),ex=document.getElementById('card-exam');
+  if(userProgress>=1){sim.classList.remove('locked');sim.setAttribute('onclick',"setupModule('simulator')");}
+  else{sim.classList.add('locked');sim.removeAttribute('onclick');}
+  if(userProgress>=2){ex.classList.remove('locked');ex.setAttribute('onclick',"setupModule('exam')");}
+  else{ex.classList.add('locked');ex.removeAttribute('onclick');}
+}
+renderDashboard();
+
+function resetProgress(){userProgress=0;localStorage.removeItem('cardio_v1');renderDashboard();alert('Postęp zresetowany!');}
+
+/* ══ TTS ══ */
+function toggleTTS(id,btn){
+  if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();btn.classList.remove('playing');return;}
+  const u=new SpeechSynthesisUtterance(document.getElementById(id).innerText);
+  u.lang='pl-PL';u.onend=()=>btn.classList.remove('playing');
+  window.speechSynthesis.speak(u);btn.classList.add('playing');
+}
+function stopTTS(){if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();document.querySelectorAll('.btn-tts.playing').forEach(b=>b.classList.remove('playing'));}}
+
+/* ══ DRAG ══ */
+function makeDraggable(el,hdr){
+  let p1=0,p2=0,p3=0,p4=0;
+  hdr.onmousedown=e=>{
+    if(e.target.tagName==='BUTTON'||e.target.closest('button'))return;
+    let r=el.getBoundingClientRect();
+    el.style.right='auto';el.style.bottom='auto';el.style.left=r.left+'px';el.style.top=r.top+'px';
+    p3=e.clientX;p4=e.clientY;
+    document.onmouseup=()=>{document.onmouseup=null;document.onmousemove=null;};
+    document.onmousemove=e=>{e.preventDefault();p1=p3-e.clientX;p2=p4-e.clientY;p3=e.clientX;p4=e.clientY;el.style.top=(el.offsetTop-p2)+'px';el.style.left=(el.offsetLeft-p1)+'px';};
+  };
+}
+makeDraggable(document.getElementById('audio-panel'),document.querySelector('#audio-panel .drag-header'));
+makeDraggable(document.getElementById('comms-hub'),document.querySelector('#comms-hub .drag-header'));
+makeDraggable(document.getElementById('peer-hub'),document.querySelector('#peer-hub .drag-header'));
+
+function toggleSidePanel(id){document.getElementById(id).classList.toggle('open');}
+
+/* ══ CHAT ══ */
+function toggleChat(id){
+  const h=document.getElementById(id);
+  if(h.classList.contains('open')){h.classList.remove('open');return;}
+  document.getElementById('comms-hub').classList.remove('open');
+  document.getElementById('peer-hub').classList.remove('open');
+  h.classList.add('open');
+  if(id==='peer-hub')document.getElementById('fab-peer').classList.remove('attention');
+}
+function appendMsg(text,type,target){
+  const b=document.getElementById(target==='peer'?'peer-messages':'comms-messages');
+  const t=`${String(new Date().getHours()).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')}`;
+  b.innerHTML+=`<div class="msg-wrapper ${type}"><div class="msg ${type}">${text}</div><span class="msg-time">${t}</span></div>`;
+  b.scrollTop=b.scrollHeight;
+}
+function triggerAnna(text){
+  document.getElementById('comms-typing').style.display='flex';
+  document.getElementById('comms-messages').scrollTop=99999;
+  setTimeout(()=>{document.getElementById('comms-typing').style.display='none';appendMsg(text,'received','comms');},1600);
+}
+function triggerMichal(text){
+  document.getElementById('peer-typing').style.display='flex';
+  setTimeout(()=>{document.getElementById('peer-typing').style.display='none';appendMsg(text,'received','peer');},2000);
+}
+function sendComms(target){
+  const inputId=target==='peer'?'peer-input':'comms-input';
+  const inp=document.getElementById(inputId);
+  if(!inp.value.trim())return;
+  appendMsg(inp.value.trim(),'sent',target);inp.value='';
+  if(target==='comms'){
+    document.getElementById('comms-typing').style.display='flex';
+    setTimeout(()=>{
+      document.getElementById('comms-typing').style.display='none';
+      let r="Dobrze analizujesz. Kontynuuj lekcję!";
+      if(activeModule==='training')r="Pamiętaj — cztery jamy, cztery zastawki. Spróbuj znaleźć je wszystkie w modelu 3D!";
+      if(activeModule==='simulator')r="Troponina jest kluczowym markerem! Podwyższona troponina + ból + uniesienie ST = natychmiastowa interwencja.";
+      if(activeModule==='exam')r="Skup się! Masz Atlas Kardiologiczny po prawej stronie jeśli czegoś nie pamiętasz.";
+      appendMsg(r,'received','comms');
+    },1700);
+  } else {
+    document.getElementById('peer-typing').style.display='flex';
+    setTimeout(()=>{
+      document.getElementById('peer-typing').style.display='none';
+      let r="Hej!";
+      if(activeModule==='training')r="Zanotuj sobie układ bodźco-przewodzący — to będzie na egzaminie na pewno! I węzeł SA jako rozrusznik...";
+      if(activeModule==='simulator')r="Patrz na troponinę! 0,8 vs norma 0,04 — to 20 razy za dużo. Coś złego dzieje się z tym sercem!";
+      if(activeModule==='exam')r="Ssst! Dr Zawadzka patrzy. Zajrzyj do Atlasu po prawej, tam są wszystkie kluczowe dane!";
+      appendMsg(r,'received','peer');
+    },2100);
+  }
+}
+
+/* ══ MODULE SETUP ══ */
+function setupModule(modId){
+  if(modId==='simulator'&&userProgress<1){alert('Zablokowane! Ukończ najpierw Fazę I: Teorię.');return;}
+  if(modId==='exam'&&userProgress<2){alert('Zablokowane! Ukończ najpierw Fazę II: Symulator.');return;}
+  activeModule=modId;
+  const checksContainer=document.getElementById('pf-checklist');
+  let checkHTML='';
+  if(modId==='training'){
+    checkHTML=`<label class="check-item"><input type="checkbox" class="flight-check" onchange="updateChecklist()"><div class="custom-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Rozumiem strukturę modułu teoretycznego</span></label>
+    <label class="check-item"><input type="checkbox" class="flight-check" onchange="updateChecklist()"><div class="custom-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Jestem gotowy do pracy z modelem 3D serca</span></label>`;
+  } else if(modId==='simulator'){
+    checkHTML=`<label class="check-item"><input type="checkbox" class="flight-check" onchange="updateChecklist()"><div class="custom-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Znam budowę anatomiczną serca</span></label>
+    <label class="check-item"><input type="checkbox" class="flight-check" onchange="updateChecklist()"><div class="custom-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Jestem gotowy do analizy danych kardiologicznych</span></label>`;
+  } else {
+    checkHTML=`<label class="check-item"><input type="checkbox" class="flight-check" onchange="updateChecklist()"><div class="custom-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Potwierdzam gotowość do egzaminu końcowego</span></label>
+    <label class="check-item"><input type="checkbox" class="flight-check" onchange="updateChecklist()"><div class="custom-checkbox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span>Akceptuję system monitorowania sesji (anti-cheat)</span></label>`;
+  }
+  checksContainer.innerHTML=checkHTML;
+  document.getElementById('btn-start-flight').disabled=true;
+  document.getElementById('pre-flight-overlay').classList.add('active');
+}
+
+function updateChecklist(){
+  const checks=document.querySelectorAll('#pf-checklist .flight-check');
+  let all=true;checks.forEach(c=>{if(!c.checked)all=false;});
+  document.getElementById('btn-start-flight').disabled=!all;
+}
+
+function initiateTakeoff(){
+  document.getElementById('pre-flight-overlay').classList.remove('active');
+  document.getElementById('main-menu').style.display='none';
+  document.getElementById(`module-${activeModule}`).style.display='flex';
+  document.getElementById('fab-instructor').classList.add('visible');
+  document.getElementById('fab-peer').classList.add('visible');
+  document.getElementById('top-module-name').textContent=activeModule==='training'?'FAZA I: TEORIA':activeModule==='simulator'?'FAZA II: SYMULATOR':'FAZA III: EGZAMIN';
+
+  if(activeModule==='training'){
+    document.getElementById('logbook-trigger').style.display='flex';
+    trWP=0;chkA=false;chkB=false;taskDone=false;taskCount=0;
+    document.querySelectorAll('#module-training .wp-section').forEach(el=>el.classList.remove('active'));
+    document.getElementById('train-wp-0').classList.add('active');
+    // reset task checkboxes
+    document.querySelectorAll('.task-check-item').forEach(el=>el.classList.remove('done'));
+    document.getElementById('task-pbar').style.width='0%';
+    document.getElementById('task-done-count').textContent='0';
+    document.getElementById('task-done-msg').classList.remove('show');
+    // reset anatomy warning
+    document.getElementById('anatomy-warning').style.display='flex';
+    document.getElementById('model-content').style.display='none';
+    document.getElementById('model-skipped').style.display='none';
+    updateTrainUI();
+    triggerAnna("Witaj w systemie CARDIO! Zacznij od obejrzenia filmu wprowadzającego. Następnie przejdziesz do artykułu i modelu 3D serca — to najważniejsza część lekcji!");
+    clearTimeout(janekTimer);
+    janekTimer=setTimeout(()=>{
+      if(activeModule!=='training')return;
+      triggerMichal("Hej! Już przy modelu 3D? Nie wiem jak odróżnić komorę lewą od prawej...");
+      document.getElementById('fab-peer').classList.add('attention');
+      document.getElementById('peer-qr-container').innerHTML=`
+        <button class="qr-btn" onclick="answerMichal(true)">Komora lewa ma grubszą ścianę!</button>
+        <button class="qr-btn" onclick="answerMichal(false)">Są identyczne — tylko po innych stronach.</button>
+      `;
+    },25000);
+  }
+  if(activeModule==='simulator'){
+    simWP=0;contraFound=0;selectedVerdict=null;verdictSubmitted=false;
+    document.querySelectorAll('#module-simulator .wp-section').forEach(el=>el.classList.remove('active'));
+    document.getElementById('sim-wp-0').classList.add('active');
+    document.querySelectorAll('.ev-highlight').forEach(el=>el.classList.remove('marked'));
+    document.querySelectorAll('.c-item').forEach(el=>el.classList.remove('found'));
+    document.getElementById('contra-count').textContent='0';
+    updateSimUI();
+    triggerAnna("Faza Symulatora — kardiologia kliniczna. Masz kartę pacjenta z trzema źródłami danych. Kliknij podświetlone wartości, aby oznaczyć nieprawidłowości. Potrzebujesz minimum 2.");
+  }
+  if(activeModule==='exam'){
+    document.getElementById('airdrop-trigger').style.display='flex';
+    document.getElementById('exam-timer').style.display='flex';
+    examQs=[
+      {type:"mcq",cat:"ANATOMIA SERCA",text:"Ile jam posiada serce człowieka?",options:["Dwie (1 przedsionek, 1 komora)","Trzy (2 przedsionki, 1 komora)","Cztery (2 przedsionki, 2 komory)","Sześć (3 przedsionki, 3 komory)"],correctAnswer:2},
+      {type:"mcq",cat:"ZASTAWKI SERCA",text:"Jak nazywa się zastawka między przedsionkiem lewym a komorą lewą?",options:["Zastawka trójdzielna","Zastawka płucna","Zastawka aortalna","Zastawka dwudzielna (mitralna)"],correctAnswer:3},
+      {type:"boolean",cat:"KRĄŻENIE",text:"Komora prawa pompuje krew utlenowaną do całego ciała przez aortę.",options:["Prawda","Fałsz"],correctAnswer:1},
+      {type:"mcq",cat:"UKŁAD BODŹCO-PRZEWODZĄCY",text:"Który element układu bodźco-przewodzącego jest naturalnym rozrusznikiem serca?",options:["Węzeł przedsionkowo-komorowy (AV)","Pęczek Hisa","Węzeł zatokowo-przedsionkowy (SA)","Włókna Purkinjego"],correctAnswer:2},
+      {type:"open",cat:"MODEL 3D — OBSERWACJE",text:"Jak nazywa się największe naczynie wychodzące z komory lewej, które rozprowadza utlenowaną krew po całym ciele? (jedno słowo)",correctAnswer:["aorta","aortę","aorty"]},
+      {type:"mcq",cat:"CYKL SERCOWY",text:"Jak nazywa się faza skurczu, podczas której wyrzucana jest krew do aorty i pnia płucnego?",options:["Diastola izowolumetryczna","Faza wyrzutu (systola)","Rozkurcz komór","Skurcz przedsionków"],correctAnswer:1},
+      {type:"open",cat:"FIZJOLOGIA",text:"Ile litrów krwi przepompowuje serce człowieka w ciągu minuty w spoczynku? (podaj liczbę)",correctAnswer:["5","ok. 5","około 5","5 l","5l"]}
+    ];
+    exQ=0;exAns=new Array(examQs.length).fill(null);exFlag=new Array(examQs.length).fill(false);
+    eliminatedOptions=new Array(examQs.length).fill(null);oxygenMasksLeft=1;
+    document.getElementById('exam-bb-view').style.display='none';
+    document.getElementById('exam-result-view').style.display='none';
+    document.getElementById('exam-quiz-view').style.display='flex';
+    renderExam();startExamTimer();
+    triggerAnna("Egzamin Live rozpoczęty! Masz 20 minut. Atlas Kardiologiczny jest dostępny po prawej. Lifeline eliminuje 2 błędne odpowiedzi. Powodzenia!");
+  }
+}
+
+function completeModule(modId){
+  if(modId==='training'&&userProgress<1){userProgress=1;localStorage.setItem('cardio_v1',1);}
+  else if(modId==='simulator'&&userProgress<2){userProgress=2;localStorage.setItem('cardio_v1',2);}
+  exitModule();
+}
+
+function exitModule(){
+  stopTTS();
+  if(activeModule)document.getElementById(`module-${activeModule}`).style.display='none';
+  document.getElementById('main-menu').style.display='flex';
+  renderDashboard();
+  document.getElementById('fab-instructor').classList.remove('visible');
+  document.getElementById('fab-peer').classList.remove('visible');
+  document.getElementById('fab-peer').classList.remove('attention');
+  document.getElementById('logbook-trigger').style.display='none';
+  document.getElementById('airdrop-trigger').style.display='none';
+  document.getElementById('exam-timer').style.display='none';
+  document.getElementById('top-module-name').textContent='CARDIO';
+  clearTimeout(janekTimer);clearInterval(examInterval);
+  activeModule=null;
+}
+
+/* ══ ANATOMY WARNING ══ */
+function dismissAnatomyWarning(){
+  document.getElementById('anatomy-warning').style.display='none';
+  const mc=document.getElementById('model-content');
+  mc.style.display='flex';
+  triggerAnna('Model 3D załadowany! Obróć go i znajdź wszystkie 5 struktur z listy zadania. Gdy zaznaczysz wszystkie — odblokujesz kolejny krok.');
+}
+function skipToNext(){
+  document.getElementById('anatomy-warning').style.display='none';
+  document.getElementById('model-content').style.display='none';
+  document.getElementById('model-skipped').style.display='block';
+  // auto-complete the task so user can proceed
+  taskDone=true;taskCount=5;updateTrainUI();
+  triggerAnna('Rozumiem. Etap z modelem został zaliczony automatycznie. Możesz swobodnie kontynuować lekcję.');
+}
+function showModelAnyway(){
+  document.getElementById('model-skipped').style.display='none';
+  // reset task
+  taskDone=false;taskCount=0;
+  document.querySelectorAll('.task-check-item').forEach(el=>el.classList.remove('done'));
+  document.getElementById('task-pbar').style.width='0%';
+  document.getElementById('task-done-count').textContent='0';
+  document.getElementById('task-done-msg').classList.remove('show');
+  updateTrainUI();
+  const mc=document.getElementById('model-content');
+  mc.style.display='flex';
+  triggerAnna('Świetnie! Obróć model i zaznacz wszystkie 5 struktur z listy poniżej.');
+}
+
+/* ══ MODULE 1: TRAINING ══ */
+let trWP=0,chkA=false,chkB=false,taskDone=false,taskCount=0;
+const TRAIN_WPS=7; // 0..6
+
+function navTrain(d){
+  if(d===1&&trWP===2&&!chkA)return;
+  if(d===1&&trWP===3&&!taskDone)return;
+  if(d===1&&trWP===5&&!chkB)return;
+  stopTTS();
+  document.getElementById(`train-wp-${trWP}`).classList.remove('active');
+  trWP+=d;
+  document.getElementById(`train-wp-${trWP}`).classList.add('active');
+  updateTrainUI();
+  // auto-rotate on entering model slide
+  if(trWP===3){
+    triggerAnna("Model 3D załadowany! Obróć go i znajdź wszystkie 5 struktur z listy zadania poniżej. Gdy zaznaczysz wszystkie — odblokujesz kolejny krok.");
+  }
+}
+function updateTrainUI(){
+  document.getElementById('train-fill').style.width=`${(trWP/(TRAIN_WPS-1))*100}%`;
+  for(let i=0;i<TRAIN_WPS;i++){const n=document.getElementById(`train-node-${i}`);n.className='waypoint-node';if(i<trWP)n.classList.add('completed');else if(i===trWP)n.classList.add('active');}
+  document.getElementById('train-prev').disabled=trWP===0;
+  document.getElementById('train-footer').style.display=trWP===TRAIN_WPS-1?'none':'flex';
+  const btn=document.getElementById('train-next');btn.disabled=false;btn.textContent='Dalej';
+  if(trWP===2&&!chkA){btn.disabled=true;btn.textContent='Wymagana odpowiedź';}
+  if(trWP===3&&!taskDone){btn.disabled=true;btn.textContent='Ukończ zadanie z modelem (0/5)';}
+  if(trWP===5&&!chkB){btn.disabled=true;btn.textContent='Wymagana odpowiedź';}
+}
+function handleTrainCheck(id,btn,isCorrect){
+  const wrap=btn.parentElement;
+  wrap.querySelectorAll('.ac-btn').forEach(b=>b.className='ac-btn');
+  const fb=document.getElementById(`train-fb-${id}`);fb.style.display='block';
+  if(isCorrect){
+    btn.classList.add('correct');fb.textContent='Poprawnie! Odblokowano następny etap.';fb.style.color='var(--success)';
+    if(id==='A')chkA=true;else chkB=true;updateTrainUI();
+    triggerAnna(id==='A'?'Świetnie! Zastawka mitralna/dwudzielna — zapamiętaj ją, bo często pojawia się na egzaminach maturalnych!':'Doskonale! Komora lewa pompuje krew pod ciśnieniem ok. 120 mmHg — dlatego jej ściana jest grubsza od komory prawej.');
+  } else {
+    btn.classList.add('wrong');fb.textContent='Niestety nie — spróbuj ponownie, wróć do artykułu.';fb.style.color='var(--danger)';
+  }
+}
+function activateStep(idx){
+  document.querySelectorAll('.process-step').forEach((el,i)=>{if(i===idx)el.classList.toggle('step-active');else el.classList.remove('step-active');});
+}
+
+/* MODEL TASK */
+function checkTask(el,idx){
+  if(el.classList.contains('done'))return;
+  el.classList.add('done');
+  taskCount++;
+  const pbar=document.getElementById('task-pbar');
+  const countEl=document.getElementById('task-done-count');
+  pbar.style.width=`${(taskCount/5)*100}%`;
+  countEl.textContent=taskCount;
+  if(taskCount>=5){
+    taskDone=true;
+    document.getElementById('task-done-msg').classList.add('show');
+    updateTrainUI();
+    triggerAnna('Brawo! Zidentyfikowałeś wszystkie kluczowe struktury anatomiczne serca. Możesz przejść do następnego etapu.');
+  }
+}
+
+function answerMichal(isCorrect){
+  const text=isCorrect?'Komora lewa ma grubszą ścianę!':'Są identyczne — tylko po innych stronach.';
+  appendMsg(text,'sent','peer');
+  document.getElementById('peer-typing').style.display='flex';
+  setTimeout(()=>{
+    document.getElementById('peer-typing').style.display='none';
+    if(isCorrect)appendMsg('Aha! Bo pompuje do całego ciała, nie tylko do płuc — to ma sens! Dzięki!','received','peer');
+    else appendMsg('Ale skoro są identyczne, to po co dwie? Hmm... muszę to sprawdzić w Atlasie!','received','peer');
+    document.getElementById('peer-qr-container').innerHTML='';
+  },2000);
+}
+
+/* COPY TO LOGBOOK */
+let selText='';
+document.addEventListener('selectionchange',()=>{
+  const sel=window.getSelection();const h=document.getElementById('copy-helper');
+  if(activeModule==='training'&&sel.toString().length>5){
+    selText=sel.toString();const r=sel.getRangeAt(0).getBoundingClientRect();
+    h.style.display='flex';h.style.top=`${r.top-40+window.scrollY}px`;h.style.left=`${r.left+(r.width/2)-80}px`;
+  } else h.style.display='none';
+});
+function copyToLogbook(){
+  const ta=document.getElementById('logbook-textarea');
+  if(!document.getElementById('logbook').classList.contains('open'))toggleSidePanel('logbook');
+  ta.value+=(ta.value?'\n\n':'')+'• '+selText;
+  document.getElementById('copy-helper').style.display='none';window.getSelection().removeAllRanges();
+  triggerAnna('Skopiowano fragment do Twojego Notatnika Badacza.');
+}
+
+/* ══ MODULE 2: SIMULATOR ══ */
+let simWP=0,contraFound=0,selectedVerdict=null,verdictSubmitted=false,markedEvidence=new Set();
+
+function markEvidence(el,idx){
+  el.classList.toggle('marked');
+  const evMap={0:[0],1:[1],2:[2],3:[2]};
+  const cIds=evMap[idx]||[];
+  if(el.classList.contains('marked')){
+    markedEvidence.add(idx);cIds.forEach(cid=>document.getElementById('ci-'+cid).classList.add('found'));
+  } else {
+    markedEvidence.delete(idx);
+    cIds.forEach(cid=>{const still=[...markedEvidence].some(m=>(evMap[m]||[]).includes(cid));if(!still)document.getElementById('ci-'+cid).classList.remove('found');});
+  }
+  contraFound=document.querySelectorAll('.c-item.found').length;
+  document.getElementById('contra-count').textContent=contraFound;
+  if(contraFound>=2){updateSimUI();if(contraFound===2)triggerAnna('Dobra obserwacja! Masz wystarczające dane. Przejdź do analizy EKG.');}
+}
+
+function updateECG(val){
+  val=parseInt(val);
+  const phases=['P','PQ','QRS','ST','T','TP'];
+  const labels=['P','P-Q','QRS','S-T','T','T-P'];
+  document.getElementById('tl-time').textContent=labels[val]||'P';
+  const cursors=[60,110,119,130,150,220];
+  document.getElementById('ekg-cursor').setAttribute('x1',cursors[val]||60);
+  document.getElementById('ekg-cursor').setAttribute('x2',cursors[val]||60);
+  const insights=[
+    '🔵 <strong>Załamek P</strong> — depolaryzacja przedsionków. Węzeł SA generuje impuls elektryczny → przedsionki kurczą się. Czas trwania: 0,08–0,1 s.',
+    '⏱️ <strong>Odcinek P-Q (P-R)</strong> — opóźnienie w węźle AV. Impuls czeka przed komorami, by krew zdążyła spłynąć z przedsionków. Norma: 0,12–0,2 s.',
+    '⚡ <strong>Zespół QRS</strong> — depolaryzacja komór. Komory kurczą się (skurcz). Czas &lt;0,12 s. U pacjenta: QRS prawidłowy. <strong>Uwaga na uniesienie ST w odprowadzeniach V2–V4!</strong>',
+    '⚠️ <strong>Odcinek ST</strong> — faza między depolaryzacją a repolaryzacją komór. <strong>Uniesienie ST &gt;1 mm → podejrzenie zawału (STEMI)!</strong> U pacjenta: uniesienie w V2–V4 sugeruje zawał przedniej ściany.',
+    '🔴 <strong>Załamek T</strong> — repolaryzacja komór. Komory wracają do potencjału spoczynkowego i rozkurczają się. Odwrócony T lub wydłużony QT = niebezpieczne arytmie.',
+    '✅ <strong>Odcinek T-P (izoelektryczny)</strong> — serce w fazie rozkurczu (diastola). Zarówno komory jak i przedsionki w spoczynku. Następny cykl za chwilę.'
+  ];
+  document.getElementById('ekg-insight').innerHTML=insights[val]||insights[0];
+}
+
+function navSim(d){
+  if(d===1){if(simWP===0&&contraFound<2)return;if(simWP===2&&!verdictSubmitted)return;}
+  document.getElementById(`sim-wp-${simWP}`).classList.remove('active');simWP+=d;
+  document.getElementById(`sim-wp-${simWP}`).classList.add('active');updateSimUI();
+}
+function updateSimUI(){
+  document.getElementById('sim-fill').style.width=`${(simWP/3)*100}%`;
+  for(let i=0;i<=3;i++){const n=document.getElementById(`sim-node-${i}`);n.className='waypoint-node';if(i<simWP)n.classList.add('completed');else if(i===simWP)n.classList.add('active');}
+  document.getElementById('sim-prev').disabled=simWP===0;
+  document.getElementById('sim-footer').style.display=simWP===3?'none':'flex';
+  const btn=document.getElementById('sim-next');btn.disabled=false;btn.textContent='Dalej';
+  if(simWP===0&&contraFound<2){btn.disabled=true;btn.textContent=`Znajdź nieprawidłowości (${contraFound}/2)`;}
+  if(simWP===2&&!verdictSubmitted){btn.disabled=true;btn.textContent='Postaw diagnozę';}
+}
+function selectVerdict(v,btn){
+  selectedVerdict=v;
+  document.querySelectorAll('.verdict-btn').forEach(b=>b.classList.remove('selected-verdict'));
+  btn.classList.add('selected-verdict');document.getElementById('btn-submit-verdict').disabled=false;
+}
+function submitVerdict(){
+  if(!selectedVerdict)return;verdictSubmitted=true;
+  const r=document.getElementById('verdict-result');r.classList.add('show');
+  document.querySelectorAll('.verdict-btn').forEach(b=>b.disabled=true);document.getElementById('btn-submit-verdict').disabled=true;
+  let title,text,color;
+  if(selectedVerdict==='zawał'){
+    title='✓ DIAGNOZA PRAWIDŁOWA — Ostry zawał serca (STEMI)';
+    text='Doskonała analiza kliniczna! Triada diagnostyczna jest kompletna: (1) ból zamostkowy trwający >20 minut, (2) uniesienie odcinka ST w odprowadzeniach V2–V4 wskazujące na niedokrwienie ściany przedniej, (3) troponina I = 0,8 ng/mL (20× norma) — dowód martwicy mięśnia sercowego. Dodatkowe czynniki ryzyka: palenie, cukrzyca, nadciśnienie, otyłość. Postępowanie: pilna koronarografia (angioplastyka lub bypass wieńcowy), leki przeciwpłytkowe, heparyna.';
+    color='var(--success)';triggerAnna('Doskonała diagnoza! To właśnie ta triada — ból + ST + troponina — definiuje STEMI. Każde opóźnienie zwiększa obszar martwicy. "Time is muscle!"');
+  } else if(selectedVerdict==='angina'){
+    title='△ DIAGNOZA CZĘŚCIOWO TRAFNA';
+    text='Myślenie idzie w dobrym kierunku, jednak dane są bardziej niepokojące niż "niestabilna dusznica". Uniesienie odcinka ST (nie tylko obniżenie) w połączeniu z troponinąą 0,8 ng/mL wskazuje na pełnościenny zawał (STEMI), a nie tylko na niestabilną AP. W NSTEMI/UA odcinek ST jest prawidłowy lub obniżony, a troponina jest marginalne podwyższona lub normalna.';
+    color='var(--warning)';
+  } else if(selectedVerdict==='nt'){
+    title='✗ DIAGNOZA BŁĘDNA — To nie izolowane nadciśnienie';
+    text='Nadciśnienie 165/100 mmHg jest obecne, ale to tylko jeden z elementów obrazu. Podwyższona troponina (20× norma), uniesienie ST, ból trwający 3h od początku, liczne czynniki ryzyka — to wszystko wskazuje na ostry zawał serca. Izolowane nadciśnienie nie powoduje wzrostu troponiny ani uniesienia ST.';
+    color='var(--danger)';
+  } else {
+    title='✗ DIAGNOZA BŁĘDNA — Pacjent wymaga natychmiastowej pomocy';
+    text='Kombinacja: tętno 112, ciśnienie 165/100, troponina 20× normy, uniesienie ST, ból 8/10 od 3h + cukrzyca + palenie = klasyczny ostry zawał serca. "Zdrowy" pacjent nie ma uniesionego ST ani 20-krotnie podwyższonej troponiny.';
+    color='var(--danger)';
+  }
+  r.style.borderLeftColor=color;r.innerHTML=`<div class="verdict-result-title" style="color:${color};">${title}</div><p style="font-size:13px;line-height:1.7;color:var(--muted);margin-top:8px;">${text}</p>`;
+  updateSimUI();
+}
+
+/* ══ MODULE 3: EXAM ══ */
+let examQs=[],exQ=0,exAns=[],exFlag=[],eliminatedOptions=[],oxygenMasksLeft=1,examInterval;
+
+function renderExam(){
+  const q=examQs[exQ];
+  document.getElementById('exam-q-counter').textContent=`PYTANIE ${exQ+1}/${examQs.length}`;
+  document.getElementById('exam-q-text').innerHTML=`<div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--red);letter-spacing:1px;margin-bottom:10px;font-weight:700;">${q.cat}</div>${q.text}`;
+  document.getElementById('exam-progress').style.width=`${(exQ/(examQs.length-1))*100}%`;
+  exFlag[exQ]?document.getElementById('exam-flag').classList.add('flagged'):document.getElementById('exam-flag').classList.remove('flagged');
+  document.getElementById('oxygen-count').textContent=oxygenMasksLeft;
+  const oc=document.getElementById('exam-options');oc.innerHTML='';
+  const oxyBtn=document.getElementById('btn-oxygen');
+  if(q.type==='open'){
+    oc.innerHTML=`<textarea class="logbook-textarea" id="exam-open" style="height:140px;border-width:2px;" placeholder="Wpisz odpowiedź..." oninput="exAns[exQ]=this.value;renderExFP()">${exAns[exQ]||''}</textarea>`;
+    oxyBtn.disabled=true;
+  } else {
+    const elims=eliminatedOptions[exQ]||[];
+    q.options.forEach((o,i)=>{
+      const b=document.createElement('button');b.className='option-btn';
+      if(exAns[exQ]===i)b.classList.add('selected');if(elims.includes(i))b.classList.add('eliminated');
+      const letter=q.type==='boolean'?(i===0?'T':'F'):String.fromCharCode(65+i);
+      b.innerHTML=`<div class="option-letter">${letter}</div><div>${o}</div>`;
+      b.onclick=()=>{exAns[exQ]=i;renderExam();};oc.appendChild(b);
+    });
+    oxyBtn.disabled=oxygenMasksLeft<=0||eliminatedOptions[exQ]!==null||q.type!=='mcq';
+  }
+  document.getElementById('exam-prev').disabled=exQ===0;
+  document.getElementById('exam-next').textContent=exQ===examQs.length-1?'Podsumowanie':'Dalej';
+  renderExFP();
+}
+function deployOxygenMask(){
+  const q=examQs[exQ];if(oxygenMasksLeft<=0||eliminatedOptions[exQ]!==null||q.type!=='mcq')return;
+  const correct=q.correctAnswer;const wrong=[0,1,2,3].filter(i=>i!==correct).sort(()=>Math.random()-0.5);
+  eliminatedOptions[exQ]=[wrong[0],wrong[1]];oxygenMasksLeft--;
+  triggerAnna('Lifeline aktywowany — usunęłam dwie na pewno błędne odpowiedzi!');renderExam();
+}
+function renderExFP(){
+  const fp=document.getElementById('exam-fp');fp.innerHTML='';
+  examQs.forEach((_,i)=>{
+    const n=document.createElement('div');n.className=`exam-fp-node ${i===exQ?'active':''} ${exAns[i]!==null&&exAns[i]!==''?'answered':''}`;
+    if(exFlag[i])n.classList.add('flagged');n.textContent=i+1;n.onclick=()=>{exQ=i;renderExam();};fp.appendChild(n);
+  });
+}
+function toggleExamFlag(){exFlag[exQ]=!exFlag[exQ];renderExam();}
+function navExam(d){
+  if(d===1&&exQ===examQs.length-1){
+    document.getElementById('exam-quiz-view').style.display='none';document.getElementById('exam-bb-view').style.display='flex';
+    const bg=document.getElementById('exam-bb-grid');bg.innerHTML='';
+    examQs.forEach((_,i)=>{
+      const n=document.createElement('div');n.className=`exam-fp-node ${exAns[i]!==null&&exAns[i]!==''?'answered':''}`;
+      if(exFlag[i])n.classList.add('flagged');n.style.cssText='width:44px;height:44px;font-size:15px;';n.textContent=i+1;
+      n.onclick=()=>{document.getElementById('exam-bb-view').style.display='none';document.getElementById('exam-quiz-view').style.display='flex';exQ=i;renderExam();};
+      bg.appendChild(n);
+    });
+  } else {exQ+=d;renderExam();}
+}
+function finishExam(){
+  clearInterval(examInterval);
+  document.getElementById('exam-bb-view').style.display='none';document.getElementById('exam-result-view').style.display='flex';
+  let score=0;
+  exAns.forEach((ans,i)=>{
+    const q=examQs[i];
+    if(q.type==='mcq'||q.type==='boolean'){if(ans===q.correctAnswer)score++;}
+    else if(q.type==='open'){if(ans&&q.correctAnswer.some(a=>ans.toLowerCase().includes(a.toLowerCase())))score++;}
+  });
+  document.getElementById('exam-score').textContent=`${score}/${examQs.length}`;
+  const pct=score/examQs.length;let msg='';
+  if(pct>=0.86){msg='Wybitny wynik! Jesteś gotowym kardiologiem. ❤️';document.getElementById('result-icon').style.color='var(--success)';}
+  else if(pct>=0.57){msg='Dobry wynik! Jeszcze trochę powtórki i będziesz ekspertem.';document.getElementById('result-icon').style.color='var(--warning)';}
+  else{msg='Wróć do modułu Teorii i przejrzyj artykuł oraz model 3D jeszcze raz.';document.getElementById('result-icon').style.color='var(--danger)';}
+  document.getElementById('exam-result-msg').textContent=msg;
+}
+function startExamTimer(){
+  let t=20*60;clearInterval(examInterval);
+  examInterval=setInterval(()=>{
+    if(activeModule!=='exam'){clearInterval(examInterval);return;}
+    t--;document.getElementById('time-display').textContent=`${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
+    if(t<180)document.getElementById('exam-timer').classList.add('urgent');
+    if(t<=0){clearInterval(examInterval);finishExam();}
+  },1000);
+}
+document.addEventListener('keydown',e=>{
+  if(activeModule!=='exam'||document.getElementById('exam-quiz-view').style.display==='none')return;
+  if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName))return;
+  const q=examQs[exQ];if(q.type==='mcq'||q.type==='boolean'){
+    const elims=eliminatedOptions[exQ]||[];const map={'A':0,'B':1,'C':2,'D':3,'T':0,'F':1};
+    const i=map[e.key.toUpperCase()];if(i!==undefined&&!elims.includes(i)&&i<q.options.length){exAns[exQ]=i;renderExam();}
+  }
+  if(e.key==='ArrowRight')navExam(1);if(e.key==='ArrowLeft'&&exQ>0)navExam(-1);
+});
+window.addEventListener('blur',()=>{if(activeModule==='exam'&&document.getElementById('exam-result-view').style.display==='none')document.getElementById('leak-overlay').style.display='flex';});
+function dismissLeakAlert(){document.getElementById('leak-overlay').style.display='none';}
+
+/* ══ AUDIO ══ */
+let audioCtx,noiseNode,noiseGainNode,ambientNodes=[],ambientGainNode,isAudioPlaying=false;
+function initAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
+function stopAllAudio(){
+  if(noiseNode){noiseNode.stop();noiseNode.disconnect();noiseGainNode.disconnect();noiseNode=null;}
+  if(ambientNodes.length>0){ambientNodes.forEach(n=>{if(n.osc){n.osc.stop();n.osc.disconnect();}if(n.lfo){n.lfo.stop();n.lfo.disconnect();}if(n.extra)n.extra.disconnect();});ambientNodes=[];if(ambientGainNode)ambientGainNode.disconnect();}
+  isAudioPlaying=false;
+}
+function playNoise(type){
+  stopAllAudio();initAudioCtx();if(audioCtx.state==='suspended')audioCtx.resume();
+  let bSize=2*audioCtx.sampleRate,buf=audioCtx.createBuffer(1,bSize,audioCtx.sampleRate),out=buf.getChannelData(0);
+  if(type==='pink'||type==='waves'){let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;for(let i=0;i<bSize;i++){let w=Math.random()*2-1;b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;b2=0.969*b2+w*0.153852;b3=0.8665*b3+w*0.3104856;b4=0.55*b4+w*0.5329522;b5=-0.7616*b5-w*0.016898;out[i]=b0+b1+b2+b3+b4+b5+b6+w*0.5362;out[i]*=0.11;b6=w*0.115926;}}
+  else if(type==='cabin'){let lOut=0;for(let i=0;i<bSize;i++){let w=Math.random()*2-1;out[i]=(lOut+(0.02*w))/1.02;lOut=out[i];out[i]*=3.5;}}
+  noiseNode=audioCtx.createBufferSource();noiseNode.buffer=buf;noiseNode.loop=true;
+  let filter=audioCtx.createBiquadFilter();filter.type='lowpass';
+  if(type==='cabin')filter.frequency.value=400;
+  else if(type==='waves'){let lfo=audioCtx.createOscillator();lfo.type='sine';lfo.frequency.value=0.1;let lg=audioCtx.createGain();lg.gain.value=800;filter.frequency.value=1000;lfo.connect(lg);lg.connect(filter.frequency);lfo.start();ambientNodes.push({osc:lfo});}
+  else filter.frequency.value=3000;
+  noiseGainNode=audioCtx.createGain();noiseGainNode.gain.value=document.getElementById('audio-volume').value;
+  if(type==='waves'){let glfo=audioCtx.createOscillator();glfo.type='sine';glfo.frequency.value=0.1;let ga=audioCtx.createGain();ga.gain.value=0.5;let wv=audioCtx.createGain();wv.gain.value=0.5;glfo.connect(ga);ga.connect(wv.gain);glfo.start();ambientNodes.push({osc:glfo});noiseNode.connect(filter);filter.connect(wv);wv.connect(noiseGainNode);}
+  else{noiseNode.connect(filter);filter.connect(noiseGainNode);}
+  noiseGainNode.connect(audioCtx.destination);noiseNode.start(0);isAudioPlaying=true;
+}
+function playSynth(type){
+  stopAllAudio();initAudioCtx();if(audioCtx.state==='suspended')audioCtx.resume();
+  ambientGainNode=audioCtx.createGain();ambientGainNode.gain.value=document.getElementById('audio-volume').value;ambientGainNode.connect(audioCtx.destination);
+  let freqs=[],oType='sine',lSpd=0.05;
+  if(type==='ambient'){freqs=[174.61,220,261.63,329.63];oType='sine';}else if(type==='ethereal'){freqs=[261.63,392,493.88,587.33];oType='triangle';lSpd=0.1;}
+  freqs.forEach((f,i)=>{
+    let osc=audioCtx.createOscillator();osc.type=oType;osc.frequency.value=f;
+    let mg=audioCtx.createGain();let lfo=null;
+    if(lSpd>0){lfo=audioCtx.createOscillator();lfo.type='sine';lfo.frequency.value=lSpd+(i*0.01);let lg=audioCtx.createGain();lg.gain.value=type==='ethereal'?0.3:0.2;mg.gain.value=type==='ethereal'?0.1:0.2;lfo.connect(lg);lg.connect(mg.gain);lfo.start();}else mg.gain.value=0.4;
+    let filter=audioCtx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=type==='ethereal'?800:2000;osc.connect(filter);
+    filter.connect(mg);mg.connect(ambientGainNode);osc.start();ambientNodes.push({osc,lfo,extra:filter});
+  });isAudioPlaying=true;
+}
+function toggleAudioPanel(){document.getElementById('audio-panel').classList.toggle('open');document.getElementById('btn-audio').classList.toggle('active');}
+function handleAudioChannelChange(){const v=document.getElementById('audio-channel').value;if(v==='cabin'||v==='pink'||v==='waves')playNoise(v);else if(v==='ambient'||v==='ethereal')playSynth(v);else stopAllAudio();}
+function changeVolume(v){if(isAudioPlaying&&audioCtx){if(noiseGainNode)noiseGainNode.gain.setTargetAtTime(v,audioCtx.currentTime,0.1);if(ambientGainNode)ambientGainNode.gain.setTargetAtTime(v,audioCtx.currentTime,0.1);}}
+</script>
+</body>
+</html>
